@@ -1,0 +1,5 @@
+I started this manual for my friend Pundidas when I had to learn Linux at work. Most of it was hacked together in one day ;)
+
+use
+pdflatex howto.tex
+to build the pdf

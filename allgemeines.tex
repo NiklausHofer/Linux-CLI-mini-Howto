@@ -1,0 +1,19 @@
+\section{allgemeines zu Bash und der Shell}
+\subsection{prompt}
+Die Prompt ist der String, der in der Shell zuvorderst an der Zeile angezeigt wird.
+\subsection{bang bang}
+Um den zuletzt ausgef\"uhrten Befehl wieder hinter der Prompt angezeigt zu bekommen, kann die Pfeil-nach-oben Taste verwendet werden. Der Command erscheint danach erneut und kann per enter erneut gestartet oder zuerst bearbeitet werden. Es k\"onnen auch \"altere Kommandos wieder abgerufen werden, indem man die Pfeil-nach-oben Taste wiederholt bet\"atigt. Dabei werden auch commands aus vergangenen Sessions aufgelistet. Diese werden in der Datei ~/.bash\_history gespeichert.\\
+Der zuletzt ausgef\"uhrte Command kann durch !! noch einmal ausgef\"uhrt werden. Das Ausrufezeichen wird dabei als bang bezeichnet, der Command !! folglich als bangbang.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls /opt/
+Adobe  SpiderOak  bin  vmware
+niklaus@holahp1101:~$ !!
+ls /opt/
+Adobe  SpiderOak  bin  vmware
+\end{lstlisting}
+Bang kann auch verwendet werden, um einen bestimmten Command zu erreichen. Tippt man ! gefolgt von einer beliebigen Anzahl von Buchstaben, so wird der letzte Command, der mit dieser Buchstabenfolge begonnen hat erneut ausef\"urth.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ !ls
+ls /opt/
+Adobe  SpiderOak  bin  vmware
+\end{lstlisting}

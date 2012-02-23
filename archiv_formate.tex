@@ -1,0 +1,72 @@
+\section{Archiv-Formate}
+\subsection{Weshalb braucht es tar}
+Archive, komprimiert oder unkomprimiert, gibt es in unz\"ahligen Formaten. Besonders verbreitet unter Linux sind .tar.gz und .tar.bz. Der wesentlich Unterschied von gzip und bzip2 zu zip oder 7z ist, dass sie nur Dateien komprimieren, nicht aber 'zusammenbinden' und in einem Archiv vereinen k\"onnen. Deshalb braucht man dazu tar (typed archive), das resultierende tar archiv wird dann mit gzip oder bzip2 komprimiert. Der tar command bietet aber Parameter und das in einem Prozess zu erledigen.\\
+NOTE: .tar.gz ist dasselbe wie .tgz
+\subsection{gzip vs. bzip2}
+Gzip ist auf absolut jedem Linux bereits vorhanden. Das gilt heute zumeist aus f\"ur bzip2, trotzdem geniesst gzip die h\"ohere Verbreitung. bzip2 ist st\"arker in der Kompression, daf\"ur aber langsamer als gzip.
+\subsection{handling archives in the command lines}
+Hier sind die meistverwendeten Befehler zum Erstellen und Entpacken der popul\"arsten Archiv Fomrate:
+\begin{description}
+\item[zip] \hfill \\
+\begin{lstlisting}[frame=single]
+# zip one or several files
+zip new_archive.zip file1 file2
+# zip a directory
+zip -r new_archive.zip folder1 folder2
+# unzip
+unzip archive.zip
+\end{lstlisting}
+\item[rar] \hfill \\
+\begin{lstlisting}[frame=single]
+# create a rar arive
+rar a new_rar_archive.rar folder1 file1
+# unrar
+unrar x archive.rar
+# merge splitted rar archive
+unrar x -e file.part1.rar
+\end{lstlisting}
+\item[7z] \hfill \\
+\begin{lstlisting}[frame=single]
+# create 7z archive with strongest compression possible
+7z a -t7z -m0=lzma -mx=9 -mfb=64 =md=32m -ms=on new_archive.7z folder1
+# Dafuer wuerde ich auf jeden Fall einen Alias anlegen
+alias 7ze="7z a -t7z -m0=lzma -mx=9 -mfb=64 =md=32m -ms=on"
+# Jetzt geht das doch gleich viel einfacher
+7ze new_archive.7z folder1
+# unzip
+7z x file.7z
+# gesplittetes Archiv zusammenfuegen
+cat *.7z >> output.7z
+7z x output.7z
+\end{lstlisting}
+\item[Tar] \hfill \\
+\begin{lstlisting}[frame=single]
+# erstellen
+tar cfv new_archive.tar folder1 file1 folder2
+# entpacken
+tar xfv archiv.tar
+\end{lstlisting}
+\item[gzip] \hfill \\
+\begin{lstlisting}[frame=single]
+# Datei komprimieren
+gzip datei
+# dekomprimieren
+gunzip datei.gz
+# mit tar verpacken und mit gzip verpacken
+tar cfvz neues_archiv.tar.gz ordner1 ordner2 datei1
+# .tar.gz entpacken
+tar xfvz archiv.tar.gz
+\end{lstlisting}
+\item[bzip2] \hfill \\
+\begin{lstlisting}[frame=single]
+# Datei komprimieren
+bzip2 datei
+# Datei dekomprimieren
+bunzip2 datei.bz2
+# mit tar verpacken und bzip2 komprimieren
+tar cfvj neues_archiv.bz2 ordner1 ordner2 datei1
+# in einem rutsch entpacken und dekomprimieren
+tar xfvj archiv.tar.bz2
+\end{lstlisting}
+
+\end{description}

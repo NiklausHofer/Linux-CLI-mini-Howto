@@ -1,0 +1,124 @@
+
+\section{Moving on the filesystem}
+\subsection{ls}
+Der grundlegendste Command ist wohl das ls. ls ist kurz f\"ur list und zeigt die Dateien des aktuellen Verzeichnis an. Standardm\"assig werden versteckte Dateien nicht angezeigt. ls kann auch verwendet werden um den Inhalt eines anderen Verzeichnisses als des aktuellen anzuzeigen. Dazu gibt man das anzuzeigende Verzeichnis einfach hinten an ls an:
+\begin{lstlisting}[frame=single]
+ls /etc
+\end{lstlisting}
+Der Befehl ls nimmt mehrere Argumente entgegen. Die wichtigsten sind -a und -l.\\
+-a steht f\"ur all und zeigt auch versteckte Verzeichnisse an:
+\begin{lstlisting}[frame=single]
+ls -a
+\end{lstlisting}
+-a zeigt auch die Verzeichnisse . und .. an. . repr\"asentiert das aktuelle Verzeichnis, .. das \"ubergeordnete. Da diese beiden Verzeichnisse immer vorhanden sind, ist es im Grunde \"uberfl\"ussig sie auch noch anzuzeigen. -A (ein grosses A) funktioniert gleich wie -a, zeigt aber . und .. nicht an.
+Die Option -l l\"asst den ls Output als Liste erscheinen, die mehr Details anzeigt. In der Liste sind zu jeder Datei die Zugriffsrechte, der Besitzer, die Besitzergruppe, die Gr\"osse in Bytes und das letzte \"Anderungsdatum aufgef\"uhrt.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls -l
+total 1053252
+drwxr-xr-x  2 niklaus users      4096 Jul 25 20:55 Desktop
+drwxr-xr-x  2 niklaus users      4096 Jul 25 20:55 Documents
+drwxr-xr-x  4 niklaus users      4096 Oct 27 13:40 Downloads
+-rw-r--r--  1 niklaus users     18170 Sep  8 16:13 inventarliste.odt
+-rw-r--r--  1 niklaus users      3625 Oct 28 10:26 kernel_config
+\end{lstlisting}
+Der Parameter -h ist besonders N\"utzlich, da er die Gr\"ossenangaben in der Liste 'humanreadable' darstellt. Also anstatt die Gr\"osse und Bytes anzugeben, h\"angt er das entsprechende Pr\"afix an. z.B. 4.3M f\"ur eine Datei mit einer Gr\"osse von 4.3Megabytes.\\
+Die Parameter lassen sich alle miteinander Kombinieren. Die Ausgabe von ls -lAh k\"onnte etwa so aussehen:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls -lAh
+total 1.1G
+-rw-------  1 niklaus users 7.7K Oct 31 17:59 .bash_history
+-rw-r--r--  1 niklaus users  127 Jul 14 10:50 .bash_logout
+-rw-r--r--  1 niklaus users  193 Jul 14 10:50 .bash_profile
+-rw-r--r--  1 niklaus users 4.5K Oct 29 18:08 .bashrc
+drwxr-xr-x  2 niklaus users 4.0K Jul 25 20:55 Desktop
+drwxr-xr-x  2 niklaus users 4.0K Jul 25 20:55 Documents
+drwxr-xr-x  4 niklaus users 4.0K Oct 27 13:40 Downloads
+-rw-r--r--  1 niklaus users  18K Sep  8 16:13 inventarliste.odt
+-rw-r--r--  1 niklaus users 3.6K Oct 28 10:26 kernel_config
+\end{lstlisting}
+ls kann auch mit Platzhaltern umgehen. Zum Beispiel 'ls *.txt' um alle Dateien mit .txt Endung im aktuellen Verzeichnis aufzulisten.
+\subsection{cd}
+cd steht f\"ur change directory und wird zur Navigation auf dem Dateisystem verwendet. Die verwendung ist sehr einfach; nach cd kommt der Pfad in den man wechseln m\"ochte als einziger Parameer.
+\begin{lstlisting}[frame=single]
+cd /etc/init.d
+\end{lstlisting}
+Die pfadangabe kann mit der <tab> taste automatisch vervollst\"andigt werden. Dabei wird jeweils so viel verfollst\"andigt wie eindeutig ist. Im Beispiel oben wird cd /e<tab> zu cd /etc/ und cd /etc/ini<tab> zu /etc/init. Ist die Angabe nicht eindeutig und wird <tab> zweimal nacheinander gedr\"uckt, so werden alle verf\"ugbaren Optionen angezeigt.
+\begin{lstlisting}[frame=single]
+cd /etc/i<tab><tab>
+idmapd.conf  init.d/      inittab
+inputrc      irssi.conf   issue
+issue.logo
+cd /etc/i
+\end{lstlisting}
+Wird cd ohne Parameter verwendet, so wechselt man ins home-directory. Alternativ kann auch
+\begin{lstlisting}[frame=single]
+cd ~
+\end{lstlisting}
+verwendet werden. Besonders hilfreicht ist cd -. Damit wechselt man ins zuletzt verwendete Verzeichnis. Muss man h\"aufig zwischen zwei Verzeichnissen hin und her springen kann cd - die Arbeit wesentlich vereinfachen.
+\begin{lstlisting}[frame=single]
+cd	# gehe ins home-directory
+cd ~	# gehe ins home-directory
+cd ~/Music	# gehe in den Musik Ordner im homedir
+cd -	# gehe in das zuletzt verwendete Directory
+cd ..	# gehe ein Verzeichnis nach oben
+\end{lstlisting}
+\subsection{mv und cp}
+mv steht f\"ur move, cp f\"ur copy. Beide funktionieren nach dem gleichen Schema. Um eine Datei zu verwschieben schreibt man
+\begin{lstlisting}[frame=single]
+mv Pfad/zu/Datei neuer/Pfad/zu/Datei
+mv ~/Musik/film.mp4 ~/Filme/film.mp4
+\end{lstlisting}
+Dabei muss beim Ziel der Dateiname nicht unbedingt angegeben werden:
+\begin{lstlisting}[frame=single]
+mv ~/Musik/film.mp4 ~/Filme/
+\end{lstlisting}
+mv und copy k\"onnen auch auf Verzeichnisse angewandt werden. mv erfordert dazu keine weiteren Parameter, cp hingegen braucht -r damit es rekursiv arbeitet:
+\begin{lstlisting}[frame=single]
+cp -r /media/usb_stick/neue_filme ~/filme/
+\end{lstlisting}
+mv wird auch zum Umbenennen von Datein verwendet. M\"ochte man die Datei test im aktuellen Verzeichnis nach test.txt umbenenen verwendet man
+\begin{lstlisting}[frame=single]
+mv test test.txt
+\end{lstlisting}
+\subsection{rm}
+Der remove command dient zum L\"oschen von Dateien und Verzeichnissen. Es ist wichtig zu wissen, dass rm Dateien l\"oscht und nicht etwa in einen Trash Ordner verschiebt. Mit rm gel\"oschte Dateien k\"onnen also nur mit aufwendigen Data recovery tools wiederhergestellt werden - wenn \"uberhaupt!\\
+Wichtig sind die Parameter -f und -r. -r l\"oscht rekursiv und wird zum L\"oschen von Verzeichnissen verwendet. -f steht f\"ur force und erzwingt das L\"oschen ohne weitere Nachfrage. Eine h\"aufige Kombination ist rm -rf zum L\"oschen von Dateien. Eigentlich kann rm -rf auch zum L\"oschen von Dateien angewant werden. Der Author r\"at dazu allgemein rm -rf zu verwenden, hat man sich das einmal angew\"ohnt kann man so Zeit und \"Arger sparen.
+\begin{lstlisting}[frame=single]
+rm -rf ~/unnecessary_folder
+\end{lstlisting}
+\subsection{mkdir}
+Mit mkdir kann ein neues Verzeichnis erstellt werden:
+\begin{lstlisting}[frame=single]
+mkdir new_directory
+\end{lstlisting}
+\subsection{rsync}
+Beide, mv und cp leiden unter einigen Schw\"achen die besonders beim Durchf\"uhren von gr\"osseren Kopieroperationen zutage treten. Einer davon ist, das sie keine Vortschrittsanzeige haben. Ein anderer, dass sie nach einem Abbruch wieder von forne beginennen m\"ussen.\\
+Diese und noch viele weitere Probleme l\"ost rsync. Rsync ist ein vielf\"altiges Tool zum Kopieren von Dateien. Es ist sehr effizient und bietet sehr viele M\"oglichkeiten zu denen unter anderem das Kopieren \"uber das Netzwerk und die Komprimierung der Daten f\"ur die Dauer des Kopiervorganges geh\"oren.\\
+Details zur Verwendung von rsync in solchen und anderen scenarien kann in der rsync manpage nachgelesen werden. Ich werde mich hier auch den Einsatz von rsync als m\"achtiger Ersatz f\"ur mv und cp konzentrieren.\\
+Rsync kann ganz simpel, ohnie Parameter, zum Kopieren von Dateien verwendet werden. Es wird dann gleich verwendet wie cp:
+\begin{lstlisting}[frame=single]
+rsync ~/filme/big_buck_bunny_1080p.wemb /medie/memory_stick/
+\end{lstlisting}
+Bereits beim Kopieren von Verzeichnisswen wird rsync aber komplexer. Nat\"urlich muss auch hier wieder der Parameter -r verwendet werden. Ausserdem gilt es aber, die genaue Angabe des Pfades zu beachten. Will man ein Verzeichnis kopieren, so darf hinten am Namen kein / stehen, dann erstellt rsync das Verzeichnis im Zielverzeichnis neu und kopiert den Inhalt. H\"angt man aber ein / hinten an das source Verzeichnis, so wird nur dessen inhalt kopiert. Hier zu Illustration:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls Downloads/thc-ipv6-1.2
+CHANGES   detect-new-ip6    dos-new-ip6.c      fake_mld6.c
+# Kopieren des Verzeichnisses
+niklaus@holahp1101:~$ rsync -r Downloads/thc-ipv6-1.2 /media/usbhd-sdb/
+niklaus@holahp1101:~$ ls /media/usbhd-sdb/copy/
+thc-ipv6-1.2
+# Kopieren des Verzeichniss Inhaltes
+niklaus@holahp1101:~$ rsync -r Downloads/thc-ipv6-1.2/ /media/usbhd-sdb/copy/
+niklaus@holahp1101:~$ ls /media/usbhd-sdb/copy/
+CHANGES   detect-new-ip6    dos-new-ip6.c      fake_mld6.c
+\end{lstlisting}
+So wie wir rsync bisher verwendet haben, gibt es uns noch keinerlei Hinweis auf den Vortschritt des Kopiervorganges. Dazu verwenden wir den Parameter -P (ein grosser P). Ausserdem ist es sinnvoll, den Parameter -v zu verwenden um eine detailliertere Anzeige der Vorg\"ange zu erhalten. Das sieht dann etwa so aus:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~/Downloads$ rsync -v -P bt5r1_gnome_vm_32.7z /media/usbhd-sdb/
+bt5r1_gnome_vm_32.7z
+   326696960  19%   77.92MB/s    0:00:16
+\end{lstlisting}
+Wir sehen jeweils die Datei die gerade kopiert wird, darunter eine Anzeige wie viele Bytes bereits kopiert sind, wie viel Prozent das ausmacht, mit welcher Geschwindigkeit die Datei kopiert wird und wie lange es vermutlich noch dauert, bis die Datei vollstaendig kopiert ist.\\
+Beim Kopieren von Dateien von einem Unix Dateisystem auf ein anderes Unix Dateisystem ist es ratsam den Parameter -a zu aktivieren, der mehrere andere Optionen aktiviert, unter anderem -r zum rekursiven Arbeiten und -p zum Beibehalten der Rechte.\\
+Kopiert man Dateien auf ein nicht Unix Dateisystem wie NTFS oder FAT, sollte nur der Parameter -r verwendet werden. F\"ur den allt\"aglichen Gebrauch sind also die Parameter -a -v -P f\"ur das Kopieren auf Unix Systemen und -r -v -P f\"ur das Kopieren auf andere Systeme meist gut gew\"ahlt (der Autor verwendet stets diese Befehle falls nicht ein besonderer Umstand etwas anderes erfordert).\\
+Ist eine Datei auf dem Ziel bereits vorhanden, so kopiert rsync stets nur den Teil der Datei, der sich ver\"andert hat. Das ist f\"ur das Backup von grossen Dateien, wie einer virtuellen Maschine, hilfreich. Zudem kann es verwendet werden um einen Ordner omni-direktional zu synchronisieren.
