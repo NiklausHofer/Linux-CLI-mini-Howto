@@ -1,0 +1,873 @@
+\documentclass[10pt,paper=a4,final]{scrartcl}
+% For good explanations and exaples, go here: http://en.wikibooks.org/wiki/LaTeX
+\usepackage[utf8]{inputenc}	%Allow german umlaute
+\usepackage{tabularx}		%used for the tables
+\usepackage{geometry}		%allows us to specify the 'seitenrand'
+\usepackage[table]{xcolor}	%allows us to make colored fields in the tables
+\usepackage{graphicx}		%package used to include graphics
+\usepackage{hyperref}   		%used to make klickable links
+\usepackage{pdflscape}		%allows landscape mode
+\usepackage{listings}
+\usepackage{courier}
+
+\lstset{
+  language=C,
+  basicstyle=\ttfamily,
+  commentstyle=\ttfamily,
+  showspaces=false
+}
+\lstdefinestyle{Shell}{delim=[il][\bfseries]{BB}}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\lstset{
+  backgroundcolor=\color{lightgray}
+}
+
+\setcounter{tocdepth}{5}        	%include everything, including subparagraph in tableofcontents
+\setcounter{secnumdepth}{5}     %also number the paragraphs
+
+%\hypersetup{linktocpage}	%make the tableofcontent klickable
+\hypersetup{
+  colorlinks,
+  citecolor=black,
+  filecolor=black,
+  linkcolor=black,
+  urlcolor=black
+}
+
+%These two lines will allow us to specify our own headers/footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+ \setlength{\parskip}{0pt}
+ \setlength{\baselineskip}{0pt}
+
+%The next three lines set the default font to Arial
+%use 'getnonfreefonts arial-urw' to install uarial on Linux systems
+%\usepackage[T1]{fontenc}
+%\usepackage[scaled]{uarial}
+%\renewcommand*\familydefault{\sfdefault}
+
+% Seitenrand will be 2cm on all four sides
+\geometry{a4paper, top=20mm, right=20mm, bottom=20mm, left=20mm}
+% Set the document title here:
+\title{Linux CLI mini Howto}
+%set the authors here
+\author{Niklaus Hofer}
+\date{\today}
+
+%defining header and footer
+\fancyhf{}	%delete default values
+\setlength{\headwidth}{\textwidth}	%header and footer width equal the text width
+\fancyhead[LE,LO]{}
+\fancyhead[RE,RO]{Linux CLI mini Howto}
+\fancyfoot[CE,CO]{Speicherdatum: \today{}}
+\fancyfoot[RE,RO]{\thepage}
+
+\begin{document}
+%make a title page with the title and authors set above
+\maketitle
+\newpage
+% linksbuendig anstatt Blocksatz
+\flushleft
+%table of contents
+\tableofcontents
+\newpage
+\section{Einf\"uhrung}
+Unger Linux ist / das root directory, alles im System liegt unter /.\\
+\subsection{Das Homedirectory}
+Jeder Nutzer hat ein home-directory. Theoretisch kann sich das \"uberall auf dem System befinden, in der Praxis ist es aber fast immer unter /home/username, also zum Beispiel /home/patrick. Das homedirectory kann mit dem K\"urzel ~ referenziert werden.\\
+Neben den vom Nutzer selbst angelegten Ordnern wie Music oder work, befinden sich im home-directory auch die privaten Einstellungen und Anwendungsdaten zu allen Applikationen. Einstellungen die der Nutzer an einer Applikation vornimmt werden ausschliesslich hier abgelegt. Die Einstellungen und Anwendungsdaten sind in 'versteckten' Ordnern oder Dateien abgelegt, damit sie beim Navigieren auf dem Dateisystem nicht st\"andig durch ihre Anwesenheit ablenken. Versteckte Ordner unter Linux/Unix sind daran zu erkennen, dass sie eine Punkt vor dem Namen tragen. Die Datei note.txt ist also immer sichtbar, die Datei .note.txt hingegen nicht.\\
+Anwendungen die nur eine einzige Konfigurationsdatei ben\"otigen erstellen meist ein .<anwendung>rc file, zum Beispiel .bashrc oder .vimrc. Programme die mehr Dateien ben\"otigen legen h\"aufig ein Verzeichnis an, das nach .<applikation> benannt ist, zum Beispiel .libreoffice. Manche Applikationen, meist modernere, legen auch ein Verzeichnis unter .config ab. Chrome/Chromium speichert die Einsellungen, Caches und history zum Beispiel unter ~/.config/chromium ab.\\
+Dadurch, dass alle Applikationsdaten hier gespeichert sind, hat der Nutzer einfachen Zugriff darauf. Hat man die Konfiguration eines Programmes verschossen, so gen\"ugt es, den entsprechenden Ordner zu l\"oschen um das Programm auf die Standardeinstellunge zur\"uck zu setzen.\\
+Dadurch dass alle Programmeinstellungen zentral im home-directory abgelegt sind, macht es auch Sinn, /home auf einer eigenen Partition zu lagern, wenn der Rechner als PC eingesetzt wird. M\"ochte man das System neu aufsetzen, so kann man danach einfach /home wieder einbinden und alle Daten und Einstellungen sind sofort wieder verwendbar!
+\subsection{.bashrc}
+Ein der wichtigsten Datein im home-directory ist die .bashrc Datei. Beim starten von Bash (was heute bei den meisten Distributionen beim Login oder beim Starten einer Shell geschieht) wird sie ausgef\"uhrt und als Konfiguration f\"ur Bash verwendet.\\
+Der gr\"osste Teil der .bashrc Datei sollte vom Nutzer nur dann ver\"andert werden, wenn er wirklich weiss was er tut. Interessant ist aber der unterste Abschnitt. Hier k\"onnen aliases festgelegt werden. Diese dienen als Abk\"urzungen f\"ur Shellcommands. Ein Alias wird nach folgendem Schema definiert:
+\begin{lstlisting}[frame=single, style=Shell]
+alias shortcut="command -with arguments"
+\end{lstlisting}
+Ein Alias der auf den meisten Distributionen bereits definiert ist ist ll (wird im Verlauf des Dokuments erkl\"art). Der Author empfielt den Alias ll auf folgenden Wert zu \"andern:
+\begin{lstlisting}[frame=single, style=Shell]
+alias ll="ls -lAh"
+\end{lstlisting}
+Zudem empfielt sich ein alias c f\"ur clear, wenn clear des \"ofteren verwendet wird:
+\begin{lstlisting}[frame=single]
+alias c="clear"
+\end{lstlisting}
+Nachdem die .bashrc bearbeitet wurde werden die \"Anderungen beim n\"achsten Start der bash angewandt. M\"ochte man die \"Anderungen sofort answenden, so kann die .bashrc \"uber folgenden command neu eingelesen werden:
+\begin{lstlisting}[frame=single]
+source ~/.bashrc
+\end{lstlisting}
+
+\section{allgemeines zu Bash und der Shell}
+\subsection{prompt}
+Die Prompt ist der String, der in der Shell zuvorderst an der Zeile angezeigt wird.
+\subsection{bang bang}
+Um den zuletzt ausgef\"uhrten Befehl wieder hinter der Prompt angezeigt zu bekommen, kann die Pfeil-nach-oben Taste verwendet werden. Der Command erscheint danach erneut und kann per enter erneut gestartet oder zuerst bearbeitet werden. Es k\"onnen auch \"altere Kommandos wieder abgerufen werden, indem man die Pfeil-nach-oben Taste wiederholt bet\"atigt. Dabei werden auch commands aus vergangenen Sessions aufgelistet. Diese werden in der Datei ~/.bash\_history gespeichert.\\
+Der zuletzt ausgef\"uhrte Command kann durch !! noch einmal ausgef\"uhrt werden. Das Ausrufezeichen wird dabei als bang bezeichnet, der Command !! folglich als bangbang.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls /opt/
+Adobe  SpiderOak  bin  vmware
+niklaus@holahp1101:~$ !!
+ls /opt/
+Adobe  SpiderOak  bin  vmware
+\end{lstlisting}
+Bang kann auch verwendet werden, um einen bestimmten Command zu erreichen. Tippt man ! gefolgt von einer beliebigen Anzahl von Buchstaben, so wird der letzte Command, der mit dieser Buchstabenfolge begonnen hat erneut ausef\"urth.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ !ls
+ls /opt/
+Adobe  SpiderOak  bin  vmware
+\end{lstlisting}
+
+\section{Moving on the filesystem}
+\subsection{ls}
+Der grundlegendste Command ist wohl das ls. ls ist kurz f\"ur list und zeigt die Dateien des aktuellen Verzeichnis an. Standardm\"assig werden versteckte Dateien nicht angezeigt. ls kann auch verwendet werden um den Inhalt eines anderen Verzeichnisses als des aktuellen anzuzeigen. Dazu gibt man das anzuzeigende Verzeichnis einfach hinten an ls an:
+\begin{lstlisting}[frame=single]
+ls /etc
+\end{lstlisting}
+Der Befehl ls nimmt mehrere Argumente entgegen. Die wichtigsten sind -a und -l.\\
+-a steht f\"ur all und zeigt auch versteckte Verzeichnisse an:
+\begin{lstlisting}[frame=single]
+ls -a
+\end{lstlisting}
+-a zeigt auch die Verzeichnisse . und .. an. . repr\"asentiert das aktuelle Verzeichnis, .. das \"ubergeordnete. Da diese beiden Verzeichnisse immer vorhanden sind, ist es im Grunde \"uberfl\"ussig sie auch noch anzuzeigen. -A (ein grosses A) funktioniert gleich wie -a, zeigt aber . und .. nicht an.
+Die Option -l l\"asst den ls Output als Liste erscheinen, die mehr Details anzeigt. In der Liste sind zu jeder Datei die Zugriffsrechte, der Besitzer, die Besitzergruppe, die Gr\"osse in Bytes und das letzte \"Anderungsdatum aufgef\"uhrt.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls -l
+total 1053252
+drwxr-xr-x  2 niklaus users      4096 Jul 25 20:55 Desktop
+drwxr-xr-x  2 niklaus users      4096 Jul 25 20:55 Documents
+drwxr-xr-x  4 niklaus users      4096 Oct 27 13:40 Downloads
+-rw-r--r--  1 niklaus users     18170 Sep  8 16:13 inventarliste.odt
+-rw-r--r--  1 niklaus users      3625 Oct 28 10:26 kernel_config
+\end{lstlisting}
+Der Parameter -h ist besonders N\"utzlich, da er die Gr\"ossenangaben in der Liste 'humanreadable' darstellt. Also anstatt die Gr\"osse und Bytes anzugeben, h\"angt er das entsprechende Pr\"afix an. z.B. 4.3M f\"ur eine Datei mit einer Gr\"osse von 4.3Megabytes.\\
+Die Parameter lassen sich alle miteinander Kombinieren. Die Ausgabe von ls -lAh k\"onnte etwa so aussehen:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls -lAh
+total 1.1G
+-rw-------  1 niklaus users 7.7K Oct 31 17:59 .bash_history
+-rw-r--r--  1 niklaus users  127 Jul 14 10:50 .bash_logout
+-rw-r--r--  1 niklaus users  193 Jul 14 10:50 .bash_profile
+-rw-r--r--  1 niklaus users 4.5K Oct 29 18:08 .bashrc
+drwxr-xr-x  2 niklaus users 4.0K Jul 25 20:55 Desktop
+drwxr-xr-x  2 niklaus users 4.0K Jul 25 20:55 Documents
+drwxr-xr-x  4 niklaus users 4.0K Oct 27 13:40 Downloads
+-rw-r--r--  1 niklaus users  18K Sep  8 16:13 inventarliste.odt
+-rw-r--r--  1 niklaus users 3.6K Oct 28 10:26 kernel_config
+\end{lstlisting}
+ls kann auch mit Platzhaltern umgehen. Zum Beispiel 'ls *.txt' um alle Dateien mit .txt Endung im aktuellen Verzeichnis aufzulisten.
+\subsection{cd}
+cd steht f\"ur change directory und wird zur Navigation auf dem Dateisystem verwendet. Die verwendung ist sehr einfach; nach cd kommt der Pfad in den man wechseln m\"ochte als einziger Parameer.
+\begin{lstlisting}[frame=single]
+cd /etc/init.d
+\end{lstlisting}
+Die pfadangabe kann mit der <tab> taste automatisch vervollst\"andigt werden. Dabei wird jeweils so viel verfollst\"andigt wie eindeutig ist. Im Beispiel oben wird cd /e<tab> zu cd /etc/ und cd /etc/ini<tab> zu /etc/init. Ist die Angabe nicht eindeutig und wird <tab> zweimal nacheinander gedr\"uckt, so werden alle verf\"ugbaren Optionen angezeigt.
+\begin{lstlisting}[frame=single]
+cd /etc/i<tab><tab>
+idmapd.conf  init.d/      inittab
+inputrc      irssi.conf   issue
+issue.logo
+cd /etc/i
+\end{lstlisting}
+Wird cd ohne Parameter verwendet, so wechselt man ins home-directory. Alternativ kann auch
+\begin{lstlisting}[frame=single]
+cd ~
+\end{lstlisting}
+verwendet werden. Besonders hilfreicht ist cd -. Damit wechselt man ins zuletzt verwendete Verzeichnis. Muss man h\"aufig zwischen zwei Verzeichnissen hin und her springen kann cd - die Arbeit wesentlich vereinfachen.
+\begin{lstlisting}[frame=single]
+cd	# gehe ins home-directory
+cd ~	# gehe ins home-directory
+cd ~/Music	# gehe in den Musik Ordner im homedir
+cd -	# gehe in das zuletzt verwendete Directory
+cd ..	# gehe ein Verzeichnis nach oben
+\end{lstlisting}
+\subsection{mv und cp}
+mv steht f\"ur move, cp f\"ur copy. Beide funktionieren nach dem gleichen Schema. Um eine Datei zu verwschieben schreibt man
+\begin{lstlisting}[frame=single]
+mv Pfad/zu/Datei neuer/Pfad/zu/Datei
+mv ~/Musik/film.mp4 ~/Filme/film.mp4
+\end{lstlisting}
+Dabei muss beim Ziel der Dateiname nicht unbedingt angegeben werden:
+\begin{lstlisting}[frame=single]
+mv ~/Musik/film.mp4 ~/Filme/
+\end{lstlisting}
+mv und copy k\"onnen auch auf Verzeichnisse angewandt werden. mv erfordert dazu keine weiteren Parameter, cp hingegen braucht -r damit es rekursiv arbeitet:
+\begin{lstlisting}[frame=single]
+cp -r /media/usb_stick/neue_filme ~/filme/
+\end{lstlisting}
+mv wird auch zum Umbenennen von Datein verwendet. M\"ochte man die Datei test im aktuellen Verzeichnis nach test.txt umbenenen verwendet man
+\begin{lstlisting}[frame=single]
+mv test test.txt
+\end{lstlisting}
+\subsection{rm}
+Der remove command dient zum L\"oschen von Dateien und Verzeichnissen. Es ist wichtig zu wissen, dass rm Dateien l\"oscht und nicht etwa in einen Trash Ordner verschiebt. Mit rm gel\"oschte Dateien k\"onnen also nur mit aufwendigen Data recovery tools wiederhergestellt werden - wenn \"uberhaupt!\\
+Wichtig sind die Parameter -f und -r. -r l\"oscht rekursiv und wird zum L\"oschen von Verzeichnissen verwendet. -f steht f\"ur force und erzwingt das L\"oschen ohne weitere Nachfrage. Eine h\"aufige Kombination ist rm -rf zum L\"oschen von Dateien. Eigentlich kann rm -rf auch zum L\"oschen von Dateien angewant werden. Der Author r\"at dazu allgemein rm -rf zu verwenden, hat man sich das einmal angew\"ohnt kann man so Zeit und \"Arger sparen.
+\begin{lstlisting}[frame=single]
+rm -rf ~/unnecessary_folder
+\end{lstlisting}
+\subsection{mkdir}
+Mit mkdir kann ein neues Verzeichnis erstellt werden:
+\begin{lstlisting}[frame=single]
+mkdir new_directory
+\end{lstlisting}
+\subsection{rsync}
+Beide, mv und cp leiden unter einigen Schw\"achen die besonders beim Durchf\"uhren von gr\"osseren Kopieroperationen zutage treten. Einer davon ist, das sie keine Vortschrittsanzeige haben. Ein anderer, dass sie nach einem Abbruch wieder von forne beginennen m\"ussen.\\
+Diese und noch viele weitere Probleme l\"ost rsync. Rsync ist ein vielf\"altiges Tool zum Kopieren von Dateien. Es ist sehr effizient und bietet sehr viele M\"oglichkeiten zu denen unter anderem das Kopieren \"uber das Netzwerk und die Komprimierung der Daten f\"ur die Dauer des Kopiervorganges geh\"oren.\\
+Details zur Verwendung von rsync in solchen und anderen scenarien kann in der rsync manpage nachgelesen werden. Ich werde mich hier auch den Einsatz von rsync als m\"achtiger Ersatz f\"ur mv und cp konzentrieren.\\
+Rsync kann ganz simpel, ohnie Parameter, zum Kopieren von Dateien verwendet werden. Es wird dann gleich verwendet wie cp:
+\begin{lstlisting}[frame=single]
+rsync ~/filme/big_buck_bunny_1080p.wemb /medie/memory_stick/
+\end{lstlisting}
+Bereits beim Kopieren von Verzeichnisswen wird rsync aber komplexer. Nat\"urlich muss auch hier wieder der Parameter -r verwendet werden. Ausserdem gilt es aber, die genaue Angabe des Pfades zu beachten. Will man ein Verzeichnis kopieren, so darf hinten am Namen kein / stehen, dann erstellt rsync das Verzeichnis im Zielverzeichnis neu und kopiert den Inhalt. H\"angt man aber ein / hinten an das source Verzeichnis, so wird nur dessen inhalt kopiert. Hier zu Illustration:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ls Downloads/thc-ipv6-1.2
+CHANGES   detect-new-ip6    dos-new-ip6.c      fake_mld6.c
+# Kopieren des Verzeichnisses
+niklaus@holahp1101:~$ rsync -r Downloads/thc-ipv6-1.2 /media/usbhd-sdb/
+niklaus@holahp1101:~$ ls /media/usbhd-sdb/copy/
+thc-ipv6-1.2
+# Kopieren des Verzeichniss Inhaltes
+niklaus@holahp1101:~$ rsync -r Downloads/thc-ipv6-1.2/ /media/usbhd-sdb/copy/
+niklaus@holahp1101:~$ ls /media/usbhd-sdb/copy/
+CHANGES   detect-new-ip6    dos-new-ip6.c      fake_mld6.c
+\end{lstlisting}
+So wie wir rsync bisher verwendet haben, gibt es uns noch keinerlei Hinweis auf den Vortschritt des Kopiervorganges. Dazu verwenden wir den Parameter -P (ein grosser P). Ausserdem ist es sinnvoll, den Parameter -v zu verwenden um eine detailliertere Anzeige der Vorg\"ange zu erhalten. Das sieht dann etwa so aus:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~/Downloads$ rsync -v -P bt5r1_gnome_vm_32.7z /media/usbhd-sdb/
+bt5r1_gnome_vm_32.7z
+   326696960  19%   77.92MB/s    0:00:16
+\end{lstlisting}
+Wir sehen jeweils die Datei die gerade kopiert wird, darunter eine Anzeige wie viele Bytes bereits kopiert sind, wie viel Prozent das ausmacht, mit welcher Geschwindigkeit die Datei kopiert wird und wie lange es vermutlich noch dauert, bis die Datei vollstaendig kopiert ist.\\
+Beim Kopieren von Dateien von einem Unix Dateisystem auf ein anderes Unix Dateisystem ist es ratsam den Parameter -a zu aktivieren, der mehrere andere Optionen aktiviert, unter anderem -r zum rekursiven Arbeiten und -p zum Beibehalten der Rechte.\\
+Kopiert man Dateien auf ein nicht Unix Dateisystem wie NTFS oder FAT, sollte nur der Parameter -r verwendet werden. F\"ur den allt\"aglichen Gebrauch sind also die Parameter -a -v -P f\"ur das Kopieren auf Unix Systemen und -r -v -P f\"ur das Kopieren auf andere Systeme meist gut gew\"ahlt (der Autor verwendet stets diese Befehle falls nicht ein besonderer Umstand etwas anderes erfordert).\\
+Ist eine Datei auf dem Ziel bereits vorhanden, so kopiert rsync stets nur den Teil der Datei, der sich ver\"andert hat. Das ist f\"ur das Backup von grossen Dateien, wie einer virtuellen Maschine, hilfreich. Zudem kann es verwendet werden um einen Ordner omni-direktional zu synchronisieren.
+
+
+
+\section{Dateien}
+\subsection{cat und less}
+Um den Inhalt einer Datei anzuzeigen kann cat verwendet werden. Es gibt den gesammten Inhalt der Datei auf dem Bildschirm aus.
+\begin{lstlisting}[frame=single]
+cat shc.sh
+while [ true ]
+do
+  clear
+  banner `date +%T`
+  sleep 1
+done
+\end{lstlisting}
+Ist die Datei zu gross um sie in einem St\"uck auf dem Monitor darzustellen, hilft less. Es \"offnet die Datei und stellt sie scrollbar dar. Mit den Pfeiltasten kann gescrollt werden, mit q wird die Ansicht verlassen.
+\subsection{tail}
+Der Tail Command zeigt die letzten zehn Zeilen einer Datei an. Der wirkliche Nutzen von tail liegt aber in der Option '-f'. -f steht f\"ur follow. Wird eine Datei mit tail -f ge\"offnet, so werden neue Zeilen die in die Datei geschrieben werden jeweils von tail dargestellt. tail -f kann also auch eine Logdatei gestartet werden. Anstatt sich nach dem Anzeigen der letzten 10 Zeilen zu beenden, l\"auft tail weiter bis es vom Nutzer beendet wird.
+\begin{lstlisting}[frame=single]
+root@system~$ tail /var/log/kernel/current
+Nov 08 15:11:58 [kernel] [ 2152.278052] ieee80211 phy0: wl_ops_bss_info_changed: arp filtering: enabled false, count 1 (implement)
+Nov 08 15:11:58 [kernel] [ 2152.287072] cfg80211: Calling CRDA for country: CH
+Nov 08 15:12:01 [kernel] [ 2154.637767] ieee80211 phy0: wl_ops_config: change monitor mode: false (implement)
+Nov 08 15:12:01 [kernel] [ 2154.637771] ieee80211 phy0: wl_ops_config: change power-save mode: false (implement)
+Nov 08 15:12:01 [kernel] [ 2154.640108] ieee80211 phy0: wl_ops_bss_info_changed: qos enabled: false (implement)
+Nov 08 15:12:01 [kernel] [ 2154.640455] ADDRCONF(NETDEV_UP): wlan0: link is not ready
+Nov 08 15:12:01 [kernel] [ 2154.692715] r8168: eth0: link down
+Nov 08 15:12:01 [kernel] [ 2154.693077] ADDRCONF(NETDEV_UP): eth0: link is not ready
+Nov 08 16:13:28 [kernel] [ 5835.244799] EXT4-fs (sda3): re-mounted. Opts: errors=remount-ro,commit=0
+Nov 08 16:13:28 [kernel] [ 5835.299962] EXT4-fs (sda4): re-mounted. Opts: errors=remount-ro,commit=0
+^C
+\end{lstlisting}
+\subsection{file}
+Der file command zeigt an um was f\"ur einen Dateitypen es sich bei einer Datei handelt und das unabh\"angig von der Endung im Dateinamen.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ file hackers.odp 
+hackers.odp: OpenDocument Presentation Zip archive data
+niklaus@holahp1101:~$ file chaos_theory_480p.webm 
+chaos_theory_480p.webm: WebM
+niklaus@holahp1101:~$ file shc.sh 
+shc.sh: ASCII text
+\end{lstlisting}
+\subsection{touch}
+Der Befehl touch wird verwendet um das \"Anderungsdatum einer Datei zu verstellen. Mit touch datei wird das \"Anderungsdatum der Datei auf den Zeitpunkt der Ausf\"uhrung gestellt:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ll shc.sh 
+-rwxr-xr-x 1 niklaus users 61 Aug 26 23:07 shc.sh
+niklaus@holahp1101:~$ touch shc.sh 
+niklaus@holahp1101:~$ ll shc.sh 
+-rwxr-xr-x 1 niklaus users 61 Nov  1 10:03 shc.sh
+\end{lstlisting}
+Das ist zwar eher ein Randfall, touch hat aber noch eine andere sehr n\"utzliche Funtion. Wendet man touch auf eine nicht existente Datei an, so wird diese als leere Datei angelegt:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ll test
+ls: cannot access test: No such file or directory
+niklaus@holahp1101:~$ touch test
+niklaus@holahp1101:~$ ll test
+-rw-r--r-- 1 niklaus users 0 Nov  1 10:04 test
+\end{lstlisting}
+\subsection{grep}
+Grep ist ein m\"achtiger und schneller Filter f\"ur Textdateien.
+\begin{lstlisting}[frame=single]
+# grep searchterm file.ending
+niklaus@holahp1101:~/wpa_supplicant-0.7.3/src/crypto$ grep sha1 sha1-pbkdf2.c 
+#include "sha1.h"
+static int pbkdf2_sha1_f(const char *passphrase, const char *ssid,
+        if (hmac_sha1_vector((u8 *) passphrase, passphrase_len, 2, addr, len,
+
+\end{lstlisting}
+Wie alle Unix tools ist auch grep case-sensitive. Um nach dem Suchbegriff unabh\"angig der Gross/Kleinschreibung zu suchen, kann der Parameter -i verwendet werden. Um Die Zeilennummern anzuzeigen, wird -n verwendet:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~/wpa_supplicant-0.7.3/src/crypto$ grep -i -n sha1 sha1-pbkdf2.c 
+2: * SHA1-based key derivation function (PBKDF2) for IEEE 802.11i
+18:#include "sha1.h"
+22:static int pbkdf2_sha1_f(const char *passphrase, const char *ssid,
+26:     unsigned char tmp[SHA1_MAC_LEN], tmp2[SHA1_MAC_LEN];
+\end{lstlisting}
+Grep kann auch auf allle Dateien im aktuellen Verzeichnis angewant werden.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~/wpa_supplicant-0.7.3/src/crypto$ grep -i -n pbkdf2 * 
+Makefile:39:    sha1-pbkdf2.o \
+sha1-pbkdf2.c:2: * SHA1-based key derivation function (PBKDF2) for IEEE 802.11i
+sha1-pbkdf2.c:22:static int pbkdf2_sha1_f(const char *passphrase, const char *ssid,
+\end{lstlisting}
+Oder rekursiv auf alle Dateien in einem Verzeichnisbaum. Dazu wird die Option -r verwendet. Ausserdem ist hier die Option -l anzuraten. -l zeigt anstatt der gefundenen Zeilen nur die Namen der Dateien an, die den gesuchten String enthalten.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ grep -i -l -r pbkdf2 wpa_supplicant-0.7.3/*
+wpa_supplicant-0.7.3/src/crypto/sha1-pbkdf2.c
+wpa_supplicant-0.7.3/src/crypto/sha1.h
+wpa_supplicant-0.7.3/src/crypto/Makefile
+wpa_supplicant-0.7.3/src/ap/ap_config.c
+wpa_supplicant-0.7.3/wpa_supplicant/config.c
+wpa_supplicant-0.7.3/wpa_supplicant/wpa_passphrase.c
+wpa_supplicant-0.7.3/wpa_supplicant/xcode/wpa_supplicant.xcodeproj/project.pbxproj
+wpa_supplicant-0.7.3/wpa_supplicant/vs2005/eapol_test/eapol_test.vcproj
+wpa_supplicant-0.7.3/wpa_supplicant/vs2005/wpa_supplicant/wpa_supplicant.vcproj
+wpa_supplicant-0.7.3/wpa_supplicant/vs2005/wpasvc/wpasvc.vcproj
+wpa_supplicant-0.7.3/wpa_supplicant/vs2005/wpa_passphrase/wpa_passphrase.vcproj
+wpa_supplicant-0.7.3/wpa_supplicant/nmake.mak
+wpa_supplicant-0.7.3/wpa_supplicant/Makefile
+\end{lstlisting}
+Als Suchbegriff nimmt grep auch regex entgegen.
+\subsection{find und locate}
+Der Befehl find ist sehr m\"achtig, kann aber auch sehr komplex werden. Ich werde hier nur einige Beispiele zur Verwendung von find geben, da der Command mit all seinen Optionen zu komplex ist um hier erkl\"art zu werden. F\"ur weitergehende Funktionalit\"at referenzieren Sie bitte die manpage zu find.
+\begin{lstlisting}[frame=single]
+man find
+\end{lstlisting}
+(Verwenden Sie q um die manpage zu verlassen).\\
+Die wohl h\"aufigste Verwendung von find ist das rekursive Suchen nach Dateien mit einem Begriff im Namen. Find sucht standardm\"assig rekursiv vom aktuellen Verzeichnis aus. M\"ochten wir eine Liste aller .txt Daeien in unserem homedirectory, so k\"onnen wir den find command wie folgt verwenden:
+\begin{lstlisting}[frame=single]
+find -name *.txt
+\end{lstlisting}
+Nat\"urlich ist auch find case sensitive. Um das beim obigen Suchbefehl abzuschalten, verwenden wir anstatt des parameters -name den Parameter -iname.\\
+Find muss nicht zwingend auf das aktuelle Verzeichnis angewant werden. Um ein anderes Verzeichnis zu durchsuchen, geben wir dieses als ersten Parameter an:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ find ~/spideroak -iname *.txt*
+spideroak/gentoo_todo.txt
+\end{lstlisting}
+Einer der Gr\"unde weshalb der find command so m\"achtig ist, ist der, dass er automatisch einen Befehl auf alle gefundenen Dateien anwenden kann. Es gibt auch daf\"ur viele M\"oglichkeiten um verschidene usecases abzudecken. Hier nur ein einfaches Beispiel:\\
+Finde alle .mp4 Dateien mit dem Wort pron im Namen und verschiebe sie auf ein externes Speichermedium.
+\begin{lstlisting}[frame=single]
+find Filme -iname *pron*.mp4 -exec mv {} /media/usb_stick \;
+\end{lstlisting}
+Da find manuell alle Dateien durchackert, kann es bei komplexen Suchbegriffen oder Suchen \"uber das gesammte Dateisystem langsam werden. Abhilfe schaft da der Befehl locate. Der ist zwar bei weitem nicht so m\"achtig wie find, arbeitet daf\"ur aber mit einem Index aller Dateien, was die Suche erheblich beschleunigt. Unter Ubuntu und anderen modernen Distributionen ist locate schon korrekt eingerichtet und kann gleich verwendet werden. Locate durchsucht standardm\"assig das gesammte Dateisystem nach Dateien mit dem Suchbegriff im Namen.
+\begin{lstlisting}[frame=single]
+locate cron.d
+\end{lstlisting}
+Nat\"urlich kennt auch locate einen -i Schalter um die Gross-/Kleinschreibung zu missachten. Zudem kennt locate einen --regex switch zum Suchen mit Regex patterns.
+\subsection{du und df}
+DistUsage und DiskFree sind Proramme um den verf\"ugbaren und belegten Speicherplatz anzuzeigen. ls kann zwar den Speicherverbrauch einzelner Dateien anzeigen, nicht aber die Gr\"osse eines Verzeichnisses. Dazu kannt du verwndet werden. Wie ls kennen auch du und df den Parameter -h um die Gr\"ossenangaben besser verst\"andlich zu machen.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ du -h Downloads/
+976K    Downloads/BT5R1-GNOME-VM-32/caches/GuestAppsCache/appData
+16K     Downloads/BT5R1-GNOME-VM-32/caches/GuestAppsCache/launchMenu
+996K    Downloads/BT5R1-GNOME-VM-32/caches/GuestAppsCache
+1000K   Downloads/BT5R1-GNOME-VM-32/caches
+7.6G    Downloads/BT5R1-GNOME-VM-32
+1.7M    Downloads/thc-ipv6-1.2
+9.2G    Downloads/
+\end{lstlisting}
+Standardm\"assig zeigt du die Gr\"osse jedes Unterverzeichnisses einzeln an. Will man nur die gesammte Gr\"osse, so verwendet man den -s Parameter:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ du -h -s Downloads/
+9.2G    Downloads/
+\end{lstlisting}
+df zeigt an, wie viel Speicherplatz auf einem device belegt ist. Wird df ohne weitere Arguemnte ausgef\"uhrt, so zeigt es diese Daten f\"ur alle Speichermedien an. Alternativ kann als Parameter der Pfad zum Device angegeben werden. Dabei spielt es keine rolle, ob man das Device in /dev refferenziert oder oder mit dem mountpoint.
+\begin{lstlisting}[frame=single]
+# df one Angabe eines Devices
+niklaus@holahp1101:~$ df -h
+Filesystem            Size  Used Avail Use% Mounted on
+rootfs                 32G  9.0G   21G  31% /
+/dev/root              32G  9.0G   21G  31% /
+rc-svcdir             1.0M   88K  936K   9% /lib64/rc/init.d
+udev                   10M  292K  9.8M   3% /dev
+shm                   1.9G     0  1.9G   0% /dev/shm
+/dev/sda1             2.0G   36M  1.9G   2% /boot
+/dev/sda4             424G  159G  244G  40% /home
+/dev/sdb              914M  601M  313M  66% /media/usbhd-sdb
+# df auf mountpoint
+niklaus@holahp1101:~$ df -h /media/usbhd-sdb/
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sdb              914M  601M  313M  66% /media/usbhd-sdb
+# df auf das Device selbst
+niklaus@holahp1101:~$ df -h /dev/sdb 
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sdb              914M  601M  313M  66% /media/usbhd-sdb
+\end{lstlisting}
+
+\section{Archiv-Formate}
+\subsection{Weshalb braucht es tar}
+Archive, komprimiert oder unkomprimiert, gibt es in unz\"ahligen Formaten. Besonders verbreitet unter Linux sind .tar.gz und .tar.bz. Der wesentlich Unterschied von gzip und bzip2 zu zip oder 7z ist, dass sie nur Dateien komprimieren, nicht aber 'zusammenbinden' und in einem Archiv vereinen k\"onnen. Deshalb braucht man dazu tar (typed archive), das resultierende tar archiv wird dann mit gzip oder bzip2 komprimiert. Der tar command bietet aber Parameter und das in einem Prozess zu erledigen.\\
+NOTE: .tar.gz ist dasselbe wie .tgz
+\subsection{gzip vs. bzip2}
+Gzip ist auf absolut jedem Linux bereits vorhanden. Das gilt heute zumeist aus f\"ur bzip2, trotzdem geniesst gzip die h\"ohere Verbreitung. bzip2 ist st\"arker in der Kompression, daf\"ur aber langsamer als gzip.
+\subsection{handling archives in the command lines}
+Hier sind die meistverwendeten Befehler zum Erstellen und Entpacken der popul\"arsten Archiv Fomrate:
+\begin{description}
+\item[zip] \hfill \\
+\begin{lstlisting}[frame=single]
+# zip one or several files
+zip new_archive.zip file1 file2
+# zip a directory
+zip -r new_archive.zip folder1 folder2
+# unzip
+unzip archive.zip
+\end{lstlisting}
+\item[rar] \hfill \\
+\begin{lstlisting}[frame=single]
+# create a rar arive
+rar a new_rar_archive.rar folder1 file1
+# unrar
+unrar x archive.rar
+# merge splitted rar archive
+unrar x -e file.part1.rar
+\end{lstlisting}
+\item[7z] \hfill \\
+\begin{lstlisting}[frame=single]
+# create 7z archive with strongest compression possible
+7z a -t7z -m0=lzma -mx=9 -mfb=64 =md=32m -ms=on new_archive.7z folder1
+# Dafuer wuerde ich auf jeden Fall einen Alias anlegen
+alias 7ze="7z a -t7z -m0=lzma -mx=9 -mfb=64 =md=32m -ms=on"
+# Jetzt geht das doch gleich viel einfacher
+7ze new_archive.7z folder1
+# unzip
+7z x file.7z
+# gesplittetes Archiv zusammenfuegen
+cat *.7z >> output.7z
+7z x output.7z
+\end{lstlisting}
+\item[Tar] \hfill \\
+\begin{lstlisting}[frame=single]
+# erstellen
+tar cfv new_archive.tar folder1 file1 folder2
+# entpacken
+tar xfv archiv.tar
+\end{lstlisting}
+\item[gzip] \hfill \\
+\begin{lstlisting}[frame=single]
+# Datei komprimieren
+gzip datei
+# dekomprimieren
+gunzip datei.gz
+# mit tar verpacken und mit gzip verpacken
+tar cfvz neues_archiv.tar.gz ordner1 ordner2 datei1
+# .tar.gz entpacken
+tar xfvz archiv.tar.gz
+\end{lstlisting}
+\item[bzip2] \hfill \\
+\begin{lstlisting}[frame=single]
+# Datei komprimieren
+bzip2 datei
+# Datei dekomprimieren
+bunzip2 datei.bz2
+# mit tar verpacken und bzip2 komprimieren
+tar cfvj neues_archiv.bz2 ordner1 ordner2 datei1
+# in einem rutsch entpacken und dekomprimieren
+tar xfvj archiv.tar.bz2
+\end{lstlisting}
+
+\end{description}
+
+\section{virtuelle Dateisysteme in /dev und einige hacks dazu}
+Unter Linux sind alle am Computer angeh\"angten Ger\"ate unter /dev aufgef\"hrt. Meistens greift der Nutzer nicht auf Dateien in /dev zu. Es gibt aber einige Ausnahmen. Die wichtigste sind die virtuellen Dateisysteme /dev/zero /dev/null und /dev/random.\\
+\begin{itemize}
+\item /dev/zero ist ein virtuelles Dateisystem, das immer Nullen zur\"uckgibt
+\item /dev/null ist ein virtuelles Dateisystem, in das sich unbegrenzt viele Daten schreiben lassen. Diese werden dabei aber nicht gespeichert, sondern ins Nirvana geschickt.
+\item /dev/random liefert zuf\"allige Werte zur\"uck. Die Zufallswerte von /dev/random haben eine sehr hohe kryptografische Qualit\"at sind aber aufwenig zu erzeugen und f\"ur grosse Schreiboperationen wie das \"Uberschreiben einer Festplatte nicht geeignet. Vielmehr sind si zu verwenden wenn hohe kryptografische Anspr\"uche gestellt werden wie beim Erstellen eines keys.
+\item /dev/urandom /dev/urandom liefert ebenfalls Zufallswerte, allerdings mit weniger hoher Qualit\"at, daf\"ur schneller. Die Werte sind aber immer noch als stark zu betrachten und gen\"ugen f\"ur die meisten Aufgaben.
+\end{itemize}
+Hier einige Anwendungszwechek f\"ur diese virtuellen Devices:
+\begin{description}
+\item[Output umleiten] \hfill \\
+Wird ein Programm in der Konsole gestartet, so gibt es von Zeit zu Zeit Output zur\"uck. M\"ochte man aber in der gleichen Konsole weiterarbeiten kann das l\"astig sein. Der Output kann deshalb nach /dev/null umgeleitet werden. Zudem k\"onnen Fehlermeldunen wahlweise ebenfalls oder eben nicht umgeleitet werden.
+\begin{lstlisting}[frame=single]
+# Umleiten des outputs
+dhcpd > /dev/null &
+# Umleitung der output und der Fehlermeldungen
+dhcpd > /dev/null 2> /dev/null &
+\end{lstlisting}
+\item[Erstellen einer beliebig grossen Testdatei] \hfill \\
+Eine beliebig grosse Testdatei kann mit dd und wahlweise /dev/zero oder /dev/urandom generiert werden. Eine solche Datei kann zum Beispiel zum Messen der Performance einer Anwendung verwendet werden. ACHTUNG: In diesem Beispiel wird dd verwendet. dd tut genau das, wozu es angewiesen wird. Wird ihm, aus Versehen oder willentlich, gesagt ben MBR der Systemplatte zu \"uberschreiben, so tut es das! Es ist deshalb Vorsicht geboten.
+\begin{lstlisting}[frame=single]
+# create a 512MB testfile with random data
+dd if=/dev/urandom of=~/testfile bs=1M count=512
+\end{lstlisting}
+\item[\"Uberschreiben des MBR] \hfill \\
+Der 512byte grosse Bootsektor l\"asst sich einfach mit Nullen \"uberschreiben. Dadurch verschwindet die Partitionstabelle und der Bootloader.
+\begin{lstlisting}[frame=single]
+# MBR der zweiten Festplatte im System
+dd if=/dev/zero of=/dev/sdb bs=1 count=512
+\end{lstlisting}
+\item[\"Uberschreiben einer Festplatte mit Zufallszahlen] \hfill \\
+Vor dem Weiterverkauf einer Festplatte sollten alle Daten darauf \"uberschrieben werden, z.B. mit Zufallszahlen.
+\begin{lstlisting}[frame=single]
+dd if=/dev/urandom of=/dev/sdb bs=1M
+\end{lstlisting}
+\end{description}
+
+\section{Speichermedien}
+Alle Speichermedien die an einem Linux System angeschlossen sind, werden im /dev-Verzeichnis bereitgestellt. Sie sind dort als Dateien vorzufinden. Diese Dateien sind nicht gemounted und jeder Zugriff darauf erfolgt auf bitebene und nicht \"uber das Dateisystem. Befor Dateien auf das Medium geschrieben und davon gelesen werden k\"onnen muss dieses gemounted werden.\\
+\subsection{Die Speichermedien in /dev}
+Speichermedien werden in /dev mit einem Namen referenziert der sich darauf bezieht in welcher Reihenfolge das Medium mit dem System verbunden wurde.
+SATA und USB Speichermedien werden mit sd(a-z) benannt, PATA/IDE Medien mit hd(a-z).\\
+Die erste Festplatte im System tr\"agt als den Namen sda und ist unter /dev/sda zu finden.\\
+Die Partitionen auf der Platte werden hochgez\"ahlt. Die erste Partition auf der ersten Platte ist sda1, die 5te Partition auf der dritten Platte sdc5. gemounted werden die Partitionen, nicht die Platten selbst.\\
+Zudem werden die Partitionen in modernen Linux distributionen mit einer eindeutigen ID, der sogenannten UUID, bezeichnet. Wird zum mounten diese ID verwendet anstatt des sda/hda Namens spielt es keine Rolle in welcher Reihenfolge die Speichermedien mit dem System verbunden wurden. Ubuntu benutzt zum Mounten der Systempartitionen immer die UUIDs. Die Partitionen werden in /dev/disk/by-uuid/ mit ihrere UUID referenziert. Um die UUID einer Partition zu ermitteln kann entweder vol\_id --uuid oder blkid verwendet werden.
+\begin{lstlisting}[frame=single]
+vol_id --uuid /dev/sda1
+72dd0978-e1a1-4dfb-af24-4e3b1eb4b4eb
+# blkid zeigt die UUIDs aller Partitionen an
+holahp1101 dev # blkid 
+/dev/sda2: UUID="4e490597-e033-44f4-9d0c-fc6355358274" TYPE="swap" 
+/dev/sda1: UUID="72dd0978-e1a1-4dfb-af24-4e3b1eb4b4eb" TYPE="ext2" 
+/dev/sda3: UUID="083cfb51-bcb0-4c5d-98a1-d73a3ffb0935" TYPE="ext4" 
+/dev/sda4: UUID="8a8a461c-9f02-4dcc-832c-8c5fc6996f0b" TYPE="ext4" 
+/dev/sdb: UUID="7E2C-336F" TYPE="vfat" 
+\end{lstlisting}
+\subsection{mount}
+In Linux kann ein Speichermedium in ein beliebiges Verzeichnis gemounted werden. Ein typisches Beispiel ist /home, das h\"aufig auf einer eigenen Partition liegt. Wenn das die zweite Partition auf der ersten Festplatte ist, so ist /dev/sda2 auf /home gemounted. Ein anderes Beispiel sind die USB Speichermedien die meistens nach /media/<name des speichermediums> gemounted werden.\\
+Laufwerke k\"onnen mit dem mount command auch manuell eingeh\"angt werden. Mount kann meistens nur von Root ausgef\"uhrt werden. Um ein Ger\"at zu mounten gen\"ugt
+\begin{lstlisting}[frame=single]
+# mount medium mountpoint
+mount /dev/sdb1 /home
+\end{lstlisting}
+F\"ur mount gibt es aber auch verschidenen Parameter. -o rw zwingt mount das Dateisystem writable zu mounten (falls irgend m\"oglich), mit -t <type> kann der Typ des Dateisystems angegeben werden.
+\begin{lstlisting}[frame=single]
+mount -o rw -t ntfs /dev/sdc1 /media/gibbix
+# ACHTUNG: das Verzeichnis /media/gibbix muss zuerste erstellt werden.
+\end{lstlisting}
+Zum Aush\"angen der Partition wird umount verwendet.
+\begin{lstlisting}[frame=single]
+umount /dev/sdc1
+# oder
+umount /media/gibbix
+\end{lstlisting}
+\subsection{automount und pmount}
+Distributionen wie Ubuntu h\"angen externe Speichermedien nach der Verbindung mit dem Computer automatisch im /media Verzeichnis ein, so dass sie auch vom Nutzer gelesen werden k\"onnen.\\
+Funktioniert das aus irgend einem Grund nicht, so kann man das Device manuell als Root einh\"angen unter Verwendung des mount commands. Das bringt aber einige Nachteile:
+\begin{itemize}
+\item Das mountverzeichnis unter /media muss zuerst manuell erstellt und am Schluss wieder gel\"oscht werden.
+\item handelt es sich um ein FAT/NTFS Dateisystem, so ist der root user danach der einzige der vollen Zugriff darauf hat.
+\end{itemize}
+Einfacher geht es mit dem tool pmount. Der Befehl
+\begin{lstlisting}[frame=single]
+pmount /dev/sdc1
+\end{lstlisting}
+h\"angt sdc1 automatisch in ein passend benanntes Verzeichnis in /media. Dieses wird entweder nach dem Speichermedium benannt (falls dieses einen Namen tr\"agt), oder nach dessen /dev namen (/media/sdc1 oder /media/usbhd-sdc1). Die Zugriffsrechte f\"ur das Ger\"at sind dann automatisch so gesetzt, dass der Nutzer der pumount ausf\"uhrte vollen Zugriff darauf hat. Wird das Verzeichnis per
+\begin{lstlisting}[frame=single]
+pumount /dev/sdc1
+\end{lstlisting}
+wieder ausgeh\"angt, so wird der Ordner in /media automatisch wieder gel\"oscht.
+\subsection{fstab}
+In der Datei /etc/fstab ist definiert welche Partitionen beim Start des Systems automatisch gemounted werden. Mindestens muss dort die Root-Parition (/) gelsited werden. Unter Ubuntu sind die Partitionen in fstab mit ihren UUIDs aufgelisted. F\"ur mehr Details zu fstab verwenden Sie bitte man fstab.
+
+\section{Starting and managing applications and daemons}
+\subsection{Applikationen}
+\subsubsection{Applikationen im Kontext der aktuellen Shell}
+Das Starten eines Programmes aus der Kommandozeile ist denkbar einfach. Bereits ls ist ein Programm das wir starten. Nat\"urlich gibt es auch Programme, die nicht sofort fertig sind. Das k\"onnte sich zum Beispiel um einen Server handeln, den wir laufen lassen.\\
+Der Server kann einfach gestartet und laufengelassen werden, indem man den Befehl eintippt. Das hat aber den Nachteil, dass die Shell dann blockiert ist, das der Server darin l\"auft.\\
+Ist ein Programm im Vordergrund der Shell am laufen, so erscheint die Prompt nicht mehr und keine neuen Befehle werde akzeptiert. Will man das Programm beenden so sollte man das zuerst durch dr\"ucken von q versuchen. Viele Programme nehmen das als Signal, dass sie stoppen sollen. Funktioniert das nicht, so kann das Programm mit CTRL+C beendet werden.\\
+Nat\"urlich k\"onnen wir aber auch ein Programm starten und danach in der gleichen Shell weiterarbeiten. Dazu muss das Programm in den Hintergrund verschoben werden. Um ein Programm gleich nach dem Start in den hintergrund zu verschieben, wird einfach ein Ampersand (\&) hinten an den Befehl geh\"angt. Sofort nach dem Starten des Befehls erscheint dann wieder die Prompt und nimmt neue Befehle entgegen.\\
+Auch bereits im Vordergrund gestartete Applikationen k\"onnen in den Hingergrund verschoben werden. Dazu wird zuerste CTRL+Z bedr\"uckt, das Programm wird das Programm wird dann pausiert und die Prompt erscheint wieder. Das pausierte Programm k\"onnen wir nun entweder im Vordergrund oder im Hingergrund weiterlaufen lassen. Dazu verwenden wir de Command fg um das Programm im Vordergrund weiterlaufen zu lassen und bg um es im Hingergrund weiterlaufen zu lassen. Programme, die im Hingergrund laufen k\"onnen sp\"ater mit fg jederzeit wieder in den Vordergrund geholt werden.
+\begin{lstlisting}[frame=single]
+# mplayer im Hintergrund starten
+niklaus@holahp1101:~$ mplayer Music/sound.ogg &
+# mplayer im Vordergrund starten, dann in den Hintergrund verschieben
+niklaus@holahp1101:~$ mplayer Music/sound.ogg
+^Z
+niklaus@holahp1101:~$ bg
+# mplayer wieder in den Vordergrund holen, dann beenden
+niklaus@holahp1101:~$ fg
+^C
+\end{lstlisting}
+Nat\"urlich k\"onnen auch mehrere Programm simultan im Hintergrund laufen. Dann beziehen sich fg und bg jeweils auf die letzte Applikation. Wir k\"onnen aber auch einen bestimmten Task referenzieren. Um zu sehen welche Tasks in unserer Shell laufen brauchen wird den command jobs.\\
+jobs zeigt f\"ur jeden in der Shell laufenden Prozess eine ID (die nur in der aktuellen Shell g\"ultig ist!), den Status der Applikation und den genauen command mit dem sie gestartet wurde:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ jobs
+[1]+  Stopped                 mplayer 39\ Guten\ Morgen\ Sonnenschein.mp3
+[2]   Running                 xterm &
+[3]-  Running                 xpdf output.pdf &
+\end{lstlisting}
+Wir k\"onnen jetzt einen bestimmten Task \"uber seine Nummer referenzieren. Zum schliessen des PDF-Readers xpdf kann wie folgt vorgegangen werden:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ fg 3
+xpdf output.pdf
+^C
+\end{lstlisting}
+Startet man Programme in einer Shell im Hintergrund, muss man sich beim Schliessen der Shell gut \"uberlegen, ob die Tasks weiterlaufen sollen. M\"ochte man, dass diese auch nach dem Schliessen der Shell weiterlaufen, so sollte man unbedingt exit verwenden um die Shell zu beenden. Manche terminal emulatoren (darunter auch die popul\"are Gnome-Shell) haben die Angewohnheit alle tasks zu beenden wenn man sie anders als mit exit schliesst.
+\subsubsection{Applikationen ausserhalb des Kontexts der aktuellen Shell}
+Es ist auch m\"oglich Applikationen zu beenden, die nicht in der aktuellen Shell gestartet wurden, sondern beispielsweise aus einer anderen Shell, von einem anderen Nutzer oder von einem System-Prozess. Beim Schliessen von Tasks anderer Benutzer ist Vorsicht begoten. Zudem kann das je nach Berechtigung des eigenen Nutzer auch nicht funktionieren. Der Root User hat die Macht s\"amtliche Prozesse zu jedem beliebigen Zeitpunkt zu beenden.\\
+Um zu sehen welche Prozesse auf dem System laufen, wird ps verwendet. Um alle Prozesse angezeigt zu bekommen werden oft die Parameter -ef verwendet. Manche Nutzer m\"ogen auch -aux anstatt -ef da die Anzeige von -aux eher der von traditionellen UNIX und BSD Systemen gleicht. Ich werde mich im weiteren Verlauf auf -ef beschr\"anken. Hier ist eine gek\"urzte Ausgabe von meinem System:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 09:01 ?        00:00:01 init [3]  
+root         2     0  0 09:01 ?        00:00:00 [kthreadd]
+root         3     2  0 09:01 ?        00:00:00 [ksoftirqd/0]
+root         6     2  0 09:01 ?        00:00:00 [migration/0]
+root         7     2  0 09:01 ?        00:00:00 [migration/1]
+...
+niklaus   2761  2376  0 09:12 ?        00:00:00 /usr/bin/xterm
+niklaus   2763  2761  0 09:12 pts/1    00:00:00 bash
+niklaus   4708  2376  0 10:26 ?        00:00:00 /usr/bin/xterm
+niklaus   4710  4708  0 10:26 pts/2    00:00:00 bash
+root      5011  1297  0 10:36 ?        00:00:00 /sbin/udevd --daemon
+root      5014  1297  0 10:36 ?        00:00:00 /sbin/udevd --daemon
+...
+\end{lstlisting}
+In der ersten Spalte steht von welchem Nutzer der Prozess gestartet wurde. In der zweiten die PID, die Process ID, \"uber die wir die Applikation ansprechen k\"onnen, in der Dritten die PPID, die PID des parent-processes, zuhinterst steht der Command mit dem der Prozess gestarte wurde.\\
+Um eine Applikation zu schliessen steht der kill Befehl zur Verf\"ugung. kill, gefolgt von der PID, 'bittet' die Applikation sich zu beenden. Falls die Applikation nicht darauf reagiert und unbedingt beendet werden soll, so bietet kill den Parameter -9 an. Wird dieser verwendet, wird der Prozess auf der Stelle abgeschossen.
+\begin{lstlisting}[frame=single]
+# Den Prozess 'bitten' sich selbst zu beenden
+niklaus@holahp1101:~$ kill 2763
+# Den Prozess abschiessen
+niklaus@holahp1101:~$ kill -9 2763
+\end{lstlisting}
+Um alle tasks zu schliessen, die mit einem bestimmten Command gestartet worden sind, bietet sich killall an.
+\begin{lstlisting}[frame=single]
+# Beende alle xterms
+killall xterm
+# Erzwinge das Beenden aller xtems
+killall -9 xterm
+\end{lstlisting}
+Unter Umst\"anden kann die Ausgabe von ps -ef sehr lang werden. Mit Grep k\"onnen wir die Ausgabe nach bestimmten Begriffen durchsuchen und nur die entsprechenden Zeilen anzeigen lassen:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ps -ef | grep xterm
+niklaus   2394  2376  0 09:02 ?        00:00:06 /usr/bin/xterm
+niklaus   2761  2376  0 09:12 ?        00:00:00 /usr/bin/xterm
+niklaus   4708  2376  0 10:26 ?        00:00:00 /usr/bin/xterm
+niklaus  11061  2376  0 14:22 ?        00:00:00 /usr/bin/xterm
+niklaus  11111  4710  0 14:23 pts/2    00:00:00 xterm
+niklaus  11686  4710  0 14:43 pts/2    00:00:00 grep --colour=auto xterm
+# Der letzte Prozess ist unser grep selbst
+\end{lstlisting}
+Ein weiteres Tool zum suchen von PIDs ist pidof. Pidof nimmt als Parameter den Namen des Programmes das gesucht wird. Anstatt des Programmnamens kann auch der fully qualified Pfad zum Binary angegeben werden (zum Beispiel pidof /bin/bash anstatt pidof bash). Pidof gibt dann die PIDs aller Prozesse dieses Commands zur\"uck. M\"ochte man nur eine einzige PID, so hilft der Parameter -s. Um nicht nur binaries, sondern auch scripts zu beachten, verwendet man den Parameter -x.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ pidof bash
+2618 2500 2387
+niklaus@holahp1101:~$ pidof -s bash
+2618
+\end{lstlisting}
+\subsection{init Prozesse}
+Unter Linux ist jedes Programm ein Prozess und jeder Prozess hat einen Parent Prozess, der ihn gestartet hat. Es gibt keine Ausnahmen! Absolut alles, einschliesslich der grafischen Oberfl\"ache ist ein Prozess. Der oberste Prozess, der als erstes gestartet wurde und der all die anderen initialisiert hat ist init. Init tr\"agt die PID 1.\\
+Im Verlauf des Systemstarts startet init weitere inti Prozesse. Start und stop Skripte f\"ur init Prozesse liegen in /etc/init.d. Manchmal ist es notwendig, einen init-daemon neu zu starten. Zum Beispiel wenn die Netzerkkonfiguration neu geschrieben wurde, muss networking neu gestartet werden damit die \"Anderungen angewandt werden. Die init Skripte in /etc/init.d unterst\"utzen die Befehle start, stop und restart. Verwendet werden sie wie folgt:
+\begin{lstlisting}[frame=single]
+holahp1101 / # /etc/init.d/network restart
+ * Stopping network             [ ok ]
+ * Starting network 	   	[ ok ]
+\end{lstlisting}
+Init Skripte k\"onnen nur vom Nutzer root gestartet und gestoppt werden.
+
+\section{Package Management}
+\subsection{Idee und Grundlage}
+Package Management wurde sehr fr\"uh sehr wichtig f\"ur Linux. Bereits 1998 existierten sehr fortgeschrittene Packet Manager.\\
+Moderne Linux Systeme wie Debian, Ubuntu, Fedora, RHEL, SUSE, Mandriva, ... werden komplett vom Packet Manager verwaltet. Ein guter Package manager weiss von jeder Datei auf dem System - die nicht vom Nutzer platziert worden ist - zu welchem Paket sie geh\"ort und welche Programme davon abh\"angen. Jeder Teil des Systems geh\"ort zu einem Paket, inklusive des Linux Kernels und dem Paket Manager selbst!\\
+Programme werden in sogenannten Paketen geliefert, die je nach Paketmanager eine anderen Endung haben (.deb f\"ur dpkg, .rpm f\"ur rpm, ...). Das Paket enth\"alt alle Teile der Applikation, ein Script das diese an der richtigen Stelle platziert und konfiguriert. Ausserdem enth\"alt es eine Liste mit Abh\"angigkeiten. Das ist ein, wenn nicht DER, wesentlich Unterschied zum Paketmanagement von Windows und OS X, wo jedes Programm alle Abh\"angigkeiten selbst mitbringt.\\
+Paketmanager unter Linux wissen welche Programme von welche abh\"angen. So weiss zum Beispiel dpkg, dass Gnome, GIMP, Pidgin, Evolution, gedit und viele weitere das GTK+ framework ben\"otigen. DPKG installiert GTK+ ein einziges Mal, so dass die Programme, die davon abh\"angen darauf zugreiffen k\"onnen. Die brauchen GTK+ dann nicht mehr selbst mit zu bringen. Dadurch gehen der Download und die Installation eines Programmes unter Linus ofmals wesentlich schneller als unter anderen Systemen. Zudem ben\"otigen Programme wesentlich weniger Platz.\\
+Dar\"uberhinaus erkennt er Package manager, wenn ein Programm, das als Abh\"angigkeit eines oder mehrere Anderer isntalliert wurde nicht mehr ben\"otigt wird und kann es entfernen. W\"aren in unserem Beispiel alle GTK+ Applikationen entfernt, so kann der paket manager das GTK+ framework entfernen.\\
+Es gibt eine grosse Anzahl von Paketmanagern. Die meist verwendeten sind aber RPM (RedHat Package Manager) und DPKG (Debian Package Manager). Sie beide haben gemein, dass sie nur offline arbeiten und heute eher selten direkt bedient werden. Vielmehr werden sie heute \"uber interfaces bedient, die die Bedienung erleichtern und die Funktionalit\"at erweitern. Bei RPM ist das meistens YUM, bei DPKG apt oder aptitude.\\
+Die wichtigste Funktionalit\"at die diese hinzuf\"ugen sind die repositories. Dies sind online verf\"ugbare Ablagen mit, oftmals zehntausenden, von Paketen die f\"ur das System vorkompiliert und verpackt sind. Distributionen haben heuet alle ein Repository standardm\"assig eingestellt. Die Pakete dort sind digital signiert und getestet.\\
+Programme wie apt k\"onnen auf Befehl automatisch ein Programm aus dem Repository installieren, die Abh\"angigkeiten aufl\"osen und die weiteren ben\"otigten Abh\"angigkeiten ebenfalls automatisch aus dem Repository laden.\\
+Zudem k\"onnen sie im repository nachfragen, zu welchen Applikationen neue Versionen verf\"ugbar sind und diese automatisch installieren. Dadurch ist sichergestellt, das das gesammte System, vom Kernel bis zum grafischen Game, immer auf dem neuesten Stand sind, ohne dass der Entwickler der Applikation etwas daf\"ur tun muss.\\
+Wenn immer m\"oglich sollten Programme aus einem Repository installiert werden (meistens ist das auch das einfachste). Einige Programme sind aber nicht in den Standard-repositorien der Distributionen vorhanden, oder nur in veralteten Versionen. Gl\"ucklicherweise k\"onnen die Paketmanager heute aber mehrere Repositorien verbinden. F\"ugt man ein neues Repository manuell hinzu, sollte man zuerst sicher stellen, dass man dem Betreiber vertraut und sollte sichergehen, dass der public key des repositories auf dem eigenen System installiert ist, damit beim Herunterladen von Paketen gepr\"uft wernde kann, dass die Datei nicth manipuliert wurde.\\
+Einige Applikationen, die nur nach dem manuellen Download installiert werden k\"onnen, wie Google's Chrome und der Opera browser, richten nach der Installation selbst ein neues Repository ein. Dadurch stellen sie sicher, dass sie \"uber die Systemmechanismen auf dem neuesten Stand gehalten werden, ohne dass sie selbst etwas zu tun brauchen.
+\subsection{Ubuntu}
+Da ich dieses Dokument f\"ur einen Ubuntu user erstelle, konzentriere ich mich von hier an nur noch auf das Paket management von Ubuntu.
+\subsection{dpgk und apt}
+Das Paketmanagement von Ubuntu basiert auf dpkg, dem Debian Package Manager. Dieser installiert und verwatet die Pakete mit der .deb Endung.
+
+\subsubsection{apt}
+
+\section{networking}
+Desktop Linux distributionen werden heute fast immer mit grafischen Tools zur Konfiguration des Netzwerks ausgeliefert. Am bekanntesten ist der NetworkManager, der sich fast natlos in beliebte Oberfl\"achen wie KDE, Gnome oder XFCE integriert und sehr intuitiv zu bedienen ist - besonders in der k\"urzlich erschienenen Version 0.9. (Ein weiteres, grafisches Tool ist der WICD). Der Networkmanager macht auch das Verbinden mit WLAN und sogar UMTS Netzen sehr einfach.\\
+Auf servern sind solche Tools aber nicht verf\"ugbar und auch viele Poweruser bevorzugen auf ihren workstations die traditionelle Netzerkkonfiguration per Textdateien.\\
+\subsection{/etc/networks/interfaces}
+Ist nichts anderes definiert, so nutzt Linux die Datei /etc/networks/interfaces zur Konfiguration der Netzwerkkarten. Der erste Eintrag in dieser Datei ist meistens lo. Lo steht f\"ur Loopback und beschreibt das Loopback interface das der Rechner zur Kommunikation mit sich selbst verwendet. Dieser Eintrag sollte nicht ver\"andert oder gel\"oscht werden!\\
+Danach folgen die Eintr\"age f\"ur die Netzerkkarten. Die erste Physikalische Ethernet-Schnittstelle heisst eth0, bei weiteren wird die Zahl am Ende hochgez\"ahlt. Das erste WLan interface heisst wlan0. Ein Eintrag in der interfaces Datei k\"onnte in etwa so aussehen:
+\begin{lstlisting}[frame=single]
+# Start eth0 at bootup
+auto eth0
+# static IP
+iface eth0 inet static
+	address 192.168.0.100
+	netmask 255.255.255.0
+	gateway 192.168.0.1
+\end{lstlisting}
+Dieses Beispiel zeigt die im Minimum erforderlichen Optionen um der Netzwerkkarte eine statische IP zuzuteilen. Die Option auto eth0 definiert hier, dass das Interface eth0 beim Booten des Systems gestartet werden soll. Will man das nicht, so kann diese Zeile einfach weggelassen werden. Der Wert inet besagt, dass wir im Folgenden IPv4 Optionen definieren. Um IPv6 zu konfigurieren kann inet durch inet6 ersetzt werden. Static legt fest, dass eine fixe IP verwendet wird. Die nachfolgenden Optionen erfordern grundlegende Kenntnisse eines IPv4 Netzerkes, sind ansonsten aber selbserkl\"arend.\\
+Weitere verf\"ugbare Optionen sind network (in diesem Fall 192.168.0.0) und broadcast (hier 192.168.0.255).\\
+Bei Desktop Systemen ist oft die Verwendung von DHCP erw\"unscht. Die Konfiguration daf\"ur ist denkbar einfach:
+\begin{lstlisting}[frame=single]
+# Start eth0 at bootup
+auto eth0
+iface eth0 inet dhcp
+\end{lstlisting}
+Damit das funktioniert, ist nat\"urlich auch in DHCP client n\"otig. Falls noch keiner installiert ist, kann dhclient verwendet werden. DHClient kann mit
+\begin{lstlisting}[frame=single]
+root@sysem~$ /etc/init.d/dhcpcd start
+\end{lstlisting}
+gestartet werden. Der daemon l\"asst dann den dhcp client auf allen nicht konfigurierten Interfaces laufen. Je nach Distribution wird auch dhclient verwendet. Um dhclient auf einem bestimmten Interface zu verwenden, ist folgender Befehl zu verwenden.
+\begin{lstlisting}[frame=single]
+root@system~$ dhclient eth0
+\end{lstlisting}
+\subsection{resolv.conf}
+Abgesehen von der Netzerkkarte muss nat\"urlich auch der DNS Server angegeben werden. Das geschieht \"uber die Datei /etc/resolv.conf, das eine sehr einfache Syntax bietet.
+\begin{lstlisting}[frame=single]
+nameserver 192.168.0.1
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+\end{lstlisting}
+Die aufgelisteten Server werden dabei in der Reihenfolge der Eintragung priorisiert.
+\subsection{Netzerk starten}
+Ist das Netzwerk fertig konfiguriert, so kann es neu gestartet werden. Damit alle Einstellungen neu eingelesen werden, wird das Networking modul neu gestartet.
+\begin{lstlisting}[frame=single]
+root@system~$ /etc/init.d/network restart
+ * Starting network
+\end{lstlisting}
+Die Einstellunge k\"onnen jetzt getestet und verwendet werden.
+\subsection{ifconfig}
+Um die aktuelle Konfiguration einzusehen, wird ifconfig verwendet. Je nach Distribution k\"onnen alle Nutzer oder nur Root ifconfig verwenden. Wird ifconfig ohne weitere Argumente ausgef\"uhrt, so zeigt es die aktuelle Konfiguration aller verf\"ugbaren und gestartetn Netzerkkarten an. Als Parameter kann der Name eines Netzerkinterfaces angegeben werden, dann wird nur dessen Konfiguration angezeigt.
+\begin{lstlisting}[frame=single]
+root@system~$ ifconfig wlan0
+wlan0     Link encap:Ethernet  HWaddr ac:81:12:32:e5:b1  
+          inet addr:10.22.53.244  Bcast:10.22.53.255  Mask:255.255.255.0
+	  inet6 addr: fe80::ae81:12ff:fe32:e5b1/64 Scope:Link
+	  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:3 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:14 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:784 (784.0 B)  TX bytes:2061 (2.0 KiB)
+\end{lstlisting}
+Ifconfig kennt auch Optionen um das Interface zu konfigurieren. Um die im obigen config file angegebene Konfiguration per ifconfig auf ein Interface anzuwenden kann dieser Befehl verwendet werden:
+\begin{lstlisting}[frame=single]
+root@system~$ ifconfig eth0 address 192.168.0.100 netmask 255.255.255.0 broadcast 192.168.0.255
+root@system~$ ifconfig eth0
+eth0      Link encap:Ethernet  HWaddr b4:99:ba:e1:16:0e  
+          inet addr:192.168.0.100  Bcast:192.168.0.255  Mask:255.255.255.0
+	  ...
+\end{lstlisting}
+Das broadcast Arguemnt ist dabei Optional, da der Linux networking stack diese auch anhand der IP und netmask berechnen kann. F\"ur weitere Details zu diesen und weiteren Argumenten, referenzieren Sie bitte die ifconfig manpage.\\
+Ifconfig kann auch verwendet werden um einzelne Interfaces an oder abzustellen. Dazu werden die Optionen up und down verwendet.\\
+\begin{lstlisting}[frame=single]
+root@system~$ ifconfig wlan0 down
+root@system~$ ifconfig wlan0 up
+\end{lstlisting}
+\subsection{route}
+Der aufmerksame Leser hat nat\"urlich bemerkt (:p), dass wir beim manuellen definieren der Netzerkschnittstelle per ifconfig den default gateway nicht angegeben haben. Dadurch weiss Linux jetzt aber nicht, wie es Hosts und Netzwerke ausserhalb des aktuellen subnets erreichen kann. Die entsprechende Einstellung kann nicht \"uber ifconfig vorgenommen werden. Stattdessen verwenden wir hier den route command. Mit ihm kann die routing table des Systems ausgelesen und manipuliert werden. Es kommt nur selten vor, dass man im allt\"aglichen Gebrauch die Routingtable editieren muss (es sei denn, man arbeite viel mit Netzwerken oder hat ganz bestimmte W\"unsche), und wenn man es doch mal tun muss, so gen\"ugt meistens das setzen der default route. route ohne Argumente zeigt die aktuelle routingtable an:
+\begin{lstlisting}[frame=single]
+root@system~$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+loopback        -               255.0.0.0       !     0      -        0 -
+\end{lstlisting}
+Hier hat das System noch keine default route. Diese beschreibt, welcher 'Weg' zu nehmen ist, um mit anderne Netzwerken in Kontakt zu treten. Die default route wird immer dann verwendet wenn f\"ur das Ziel-Netzwerk kein anderer Eintrag in der routing table vorhanden ist (also meistens). Meistens ist das einfach die IP des lokalen Routers. Das hinzuf\"ugen einer neuen Route ist denkbar einfach:
+\begin{lstlisting}[frame=single]
+root@system~$ route add default gw 192.168.0.1
+root@system~$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         192.168.0.1     0.0.0.0         UG    304    0        0  eth0
+loopback        -               255.0.0.0       !     0      -        0 -
+\end{lstlisting}
+Dieses Ger\"at hier hat zwei Interfaces, ein Ethernet und ein WLAN. Mit route kann ich das System anweisen wlan0 zu nutzen um mit dem Wlan zu kommunizieren und eth0 f\"urs Lan, den default gateway \"uber eth0 haben wir im vorderen Beispiel bereits gesetzt:
+\begin{lstlisting}[frame=single]
+root@system~$ route add -net 192.168.2.0 netmask 255.255.255.0 dev wlan0
+root@system~$ route add -net 192.168.1.0 netmask 255.255.255.0 dev eth0
+root@system~$ route
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         192.168.0.1     0.0.0.0         UG    304    0        0  eth0
+loopback        -               255.0.0.0       !     0      -        0 -
+192.168.1.0     *               255.255.255.0   U     0      0        0 eth0
+192.168.2.0     *               255.255.255.0   U     0      0        0 wlan0
+\end{lstlisting}
+Die route manpage wartet mit vielen weiteren Beispielen und Erl\"auterungen auf.
+\subsection{iptables}
+IPtables ist eine Applikation um die Paketfilter im Kernel zu definieren. Mithilfe von IPtables kann eine software firewall mit komplexen Regeln definiert werden. Die Beschreibung von IPTables \"ubersteigt den Umfang dieser Dokumentation. Ich merke sie hier nur der Vollsta\"andigkeit halber an.
+\subsection{Weitere Netowrking tools}
+\subsubsection{host}
+Host ist ein einfach zu bedienendes Tool zum Aufl\"osen von Hostnamen in IP Adressen und umgekehrt. Mit der -v Option zeigt der host command noch details zum verwendeten Query an.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ host www.google.com
+www.google.com		CNAME	www.l.gogle.com
+www.l.google.com	A	74.125.39.103
+www.l.google.com	A	74.125.39.99
+...
+niklaus@holahp1101:~$ host -v 74.125.39.103
+Query about 74.125.39.104 for record types PTR
+Name: fx-in-f104.1e100.net
+Address: 74.125.39.104
+\end{lstlisting}
+\subsubsection{nslookup}
+nslookup kennt zwei Modi: den 'passiven' Modus und einen 'interaktiven'. Im passiven Modus ist nslookup genau gleich zu bedienen wie der host command. Im interaktiven Modus jedoch, bietet nslookup viele weitere Optionen. Um den interaktiven Modus zu starten, gibt man einfach nslookup ohne weitere Argumente ein. Die standard Prompt wird dann durch eine spitze Klammer ersetzt. Kommandos die jetzt eingegeben werden, gehen direkt an nslookup. Dieser Modus kann per exit wieder verlassen werden.\\
+Werden keine weiteren Angaben gemacht, so benutzt nslookup den standard DNS server. Mit 'lserver domain' kann der zu verwendende Server festgelegt werden. Ein query kann mit 'host' abgesetzt werden. Weitere Optionen k\"onnen in manfile nachgeschlagen werden.
+%TODO research!
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ nslookup
+> server swisscom.ch
+> host heise.de
+\end{lstlisting}
+\subsubsection{traceroute, tracepath}
+Traceroute und tracepath k\"onnen die network hops bis zu einem definierten host anzeigen. Je nach Distribution sind beide oder nur eines der Programme verf\"ugbar. Traceroute bietet dabei viel mehr Optionen an als tracepath. Weitere Informationen dazu sind in der jeweiligen manpage zu finden. Die grundlegende Verwendung von traceroute ist denkbar einfach:
+%TODO research!
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101~$ traceroute www.google.com
+\end{lstlisting}
+
+\section{Piping und output Umleitung}
+Die Shell kennt zwei Ausgaben, die Standard-Ausgabe (standard out) und die Error-Ausgabe (error out). Die beiden Ausgaben erfolgen getrennt und k\"onnen auch getrennt umgeleitet werden. Der Output kann in Dateien oder an andere Applikationen weitergeleitet werden.
+\subsection{Output in Datei umleiten}
+Der Output von Applikationen kann in eine Datei geschrieben werden. So kann man einfach Dinge dokumentieren. Beim schreiben von Scripts die automatisch ausgef\"hurt werden, ist es empfehlenswert den Output in eine Logdatei zu schreiben, damit man die Vorg\"ange sp\"ater nachvollziehen kann.
+\subsubsection{Standard out}
+Das Umleiten des Standard out in eine Datei ist einfach und intuitiv. Dazu wird einfach das Zeichen \textgreater, gefolgt von der Zieldatei, hinten an den Command geschrieben. Mit folgendem Kommando wird die aktuelle IP-Konfiguration von eth0 in eine Datei geschrieben:
+\begin{lstlisting}[frame=single, style=shell]
+niklaus@holahp1101:~$ ifconfig eth0 > eth0_config
+\end{lstlisting}
+Das einfache \textgreater ueberschreibt die Datei jedes Mal komplett. Das ist nicht immer gew\"unscht. Wir k\"onnen den Output auch jeweils an das Ende der Datei anh\"angen. Dazu verwenden wir den \textgreater\textgreater redirect. In folgendem Beispiel schreiben wir unter die Interface config noch die DNS Konfiguration.
+\begin{lstlisting}[frame=single, style=shell]
+niklaus@holahp1101:~$ ifconfig eth0 > eth0_config
+niklaus@holahp1101:~$ cat /etc/resolv.conf >> eth0_config
+\end{lstlisting}
+In manchen F\"allen m\"ochte man den Standard out aber nicht in eine Datei schreiben, sondern einfach loswerden. Zu diesem Zweck kann man ihn in den virtuellen /dev/null Datentr\"ager umleiten. Das wird oft dann gemacht, wenn ein Task im Hintergrund laufen soll w\"ahrend man im gleichen Terminal weiterarbeiten will:
+\begin{lstlisting}[frame=single, style=shell]
+niklaus@holahp1101:~$ sudo apt-get update > /dev/null &
+\end{lstlisting}
+Der \textgreater Operator kann auch zum 'leeren' einer Datei verwendet werden:
+\begin{lstlisting}[frame=single, style=shell]
+niklaus@holahp1101:~$ > eth0_config
+\end{lstlisting}
+\subsubsection{Error Output}
+Die Errors werden von Applikationen nicht in den Standard Out geschrieben, sondern in einen speziellen, den Error-, Output. Das ist n\"utzlich, da man sich beim Verarbeiten von Programm-Output nicht \"uberlegen muss, was denn geschieht wenn eine Fehlermeldung ausgegeben wird anstatt des erwarteten Outputs. Die Fehlermeldungen kann man so einfach eigens verarbeiten. Zum Umleiten des Fehleroutputs verwendet man '2\textgreater'. M\"ochte man weder vom Standard Out, noch von Fehlermeldungen gest\"ort werden, so leitet man einfach beide Outputs um.
+\begin{lstlisting}[frame=single, style=shell]
+niklaus@holahp1101:~$ sudo apt-get update > /dev/null 2> /dev/null &
+\end{lstlisting}
+\subsection{pipes}
+Einer der gr\"ossten Vorteile der Shell ist, dass verschiedene Applikationen mit sogenannten Pipes verbuden/verkettet werden k\"onnen. Dadurch kann output gefiltert oder weiterverarbeitet werden. Eine vielzahl von Shell Applikationen l\"asst sich mit pipes nutzen. Ich werde hier einige typische Verwendungen aufzeigen. Die M\"oglichkeiten die sich durch Pipes ergeben sind aber nahezu unaussch\"opflich.\\
+Das Zeichen um zwei Programme miteinander zu verbinden ist | , genannt pipe. Der Standard-output (das was auf der Shell zu sehen ist) wird dabei zum standard-input des Programmes hinter |.
+\subsection{Filtern des outputs}
+Grep kann nicht nur Dateien durchsuchen und filtern, sondern auch standard input. Dazu wird grep einfach per pipe hinten an einen anderen command geh\"angt, der zu suchende Begriff wird einfach als Parameter angeh\"angt. Ein typisches Beispiel ist die Verwendung von grep zum durchsuchen der ps Ausgabe nach einem bestimmten Prozess. Ein sehr anschauliches, wenn auch nicht besonders sinnvolles, Beispiel ist das Filtern des Outputs von cat.
+\begin{lstlisting}[frame=single, style=Shell]
+niklaus@holahp1101:/usr/src/linux$ cat CREDITS | grep Kroah
+N: Greg Kroah-Hartman
+\end{lstlisting}
+Wie bereits erw\"ahnt, ist dier Command nicht besonders ellegant, da Grep die Datei auch selbst\"andig einlesen kann.
+\begin{lstlisting}[frame=single, style=Shell]
+grep Kroah CREDITS
+\end{lstlisting}
+Grep ist ein sehr m\"achtiges Tool, es ist aber nicht die einzige M\"oglichkeit und es ist nicht f\"ur alle Aufgaben geeignet. Noch weit m\"achtiger als Grep ist AWK. AWK ist aber nicht nur ein einfaches Programm, sondern eigentlich eine eigene Programmiersprache. Ich mache hier nur ein einfaches Beispiel f\"ur die Verwendung von awk. (nah, was macht das wohl? :D, Challenge for the user!)
+\begin{lstlisting}[frame=single, style=Shell]
+ls -lh --time-style="+%D %T" .bashrc | awk '{ print $6,$7"\t"$5"\t"$8 }'
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,58 @@
+\BOOKMARK [1][-]{section.1}{Einf\374hrung}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Das Homedirectory}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{.bashrc}{section.1}% 3
+\BOOKMARK [1][-]{section.2}{allgemeines zu Bash und der Shell}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{prompt}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.2}{bang bang}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{Moving on the filesystem}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{ls}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{cd}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.3}{mv und cp}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.4}{rm}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.5}{mkdir}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.6}{rsync}{section.3}% 13
+\BOOKMARK [1][-]{section.4}{Dateien}{}% 14
+\BOOKMARK [2][-]{subsection.4.1}{cat und less}{section.4}% 15
+\BOOKMARK [2][-]{subsection.4.2}{tail}{section.4}% 16
+\BOOKMARK [2][-]{subsection.4.3}{file}{section.4}% 17
+\BOOKMARK [2][-]{subsection.4.4}{touch}{section.4}% 18
+\BOOKMARK [2][-]{subsection.4.5}{grep}{section.4}% 19
+\BOOKMARK [2][-]{subsection.4.6}{find und locate}{section.4}% 20
+\BOOKMARK [2][-]{subsection.4.7}{du und df}{section.4}% 21
+\BOOKMARK [1][-]{section.5}{Archiv-Formate}{}% 22
+\BOOKMARK [2][-]{subsection.5.1}{Weshalb braucht es tar}{section.5}% 23
+\BOOKMARK [2][-]{subsection.5.2}{gzip vs. bzip2}{section.5}% 24
+\BOOKMARK [2][-]{subsection.5.3}{handling archives in the command lines}{section.5}% 25
+\BOOKMARK [1][-]{section.6}{virtuelle Dateisysteme in /dev und einige hacks dazu}{}% 26
+\BOOKMARK [1][-]{section.7}{Speichermedien}{}% 27
+\BOOKMARK [2][-]{subsection.7.1}{Die Speichermedien in /dev}{section.7}% 28
+\BOOKMARK [2][-]{subsection.7.2}{mount}{section.7}% 29
+\BOOKMARK [2][-]{subsection.7.3}{automount und pmount}{section.7}% 30
+\BOOKMARK [2][-]{subsection.7.4}{fstab}{section.7}% 31
+\BOOKMARK [1][-]{section.8}{Starting and managing applications and daemons}{}% 32
+\BOOKMARK [2][-]{subsection.8.1}{Applikationen}{section.8}% 33
+\BOOKMARK [3][-]{subsubsection.8.1.1}{Applikationen im Kontext der aktuellen Shell}{subsection.8.1}% 34
+\BOOKMARK [3][-]{subsubsection.8.1.2}{Applikationen ausserhalb des Kontexts der aktuellen Shell}{subsection.8.1}% 35
+\BOOKMARK [2][-]{subsection.8.2}{init Prozesse}{section.8}% 36
+\BOOKMARK [1][-]{section.9}{Package Management}{}% 37
+\BOOKMARK [2][-]{subsection.9.1}{Idee und Grundlage}{section.9}% 38
+\BOOKMARK [2][-]{subsection.9.2}{Ubuntu}{section.9}% 39
+\BOOKMARK [2][-]{subsection.9.3}{dpgk und apt}{section.9}% 40
+\BOOKMARK [3][-]{subsubsection.9.3.1}{apt}{subsection.9.3}% 41
+\BOOKMARK [1][-]{section.10}{networking}{}% 42
+\BOOKMARK [2][-]{subsection.10.1}{/etc/networks/interfaces}{section.10}% 43
+\BOOKMARK [2][-]{subsection.10.2}{resolv.conf}{section.10}% 44
+\BOOKMARK [2][-]{subsection.10.3}{Netzerk starten}{section.10}% 45
+\BOOKMARK [2][-]{subsection.10.4}{ifconfig}{section.10}% 46
+\BOOKMARK [2][-]{subsection.10.5}{route}{section.10}% 47
+\BOOKMARK [2][-]{subsection.10.6}{iptables}{section.10}% 48
+\BOOKMARK [2][-]{subsection.10.7}{Weitere Netowrking tools}{section.10}% 49
+\BOOKMARK [3][-]{subsubsection.10.7.1}{host}{subsection.10.7}% 50
+\BOOKMARK [3][-]{subsubsection.10.7.2}{nslookup}{subsection.10.7}% 51
+\BOOKMARK [3][-]{subsubsection.10.7.3}{traceroute, tracepath}{subsection.10.7}% 52
+\BOOKMARK [1][-]{section.11}{Piping und output Umleitung}{}% 53
+\BOOKMARK [2][-]{subsection.11.1}{Output in Datei umleiten}{section.11}% 54
+\BOOKMARK [3][-]{subsubsection.11.1.1}{Standard out}{subsection.11.1}% 55
+\BOOKMARK [3][-]{subsubsection.11.1.2}{Error Output}{subsection.11.1}% 56
+\BOOKMARK [2][-]{subsection.11.2}{pipes}{section.11}% 57
+\BOOKMARK [2][-]{subsection.11.3}{Filtern des outputs}{section.11}% 58
