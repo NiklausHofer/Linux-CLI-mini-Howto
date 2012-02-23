@@ -1,0 +1,96 @@
+\section{Starting and managing applications and daemons}
+\subsection{Applikationen}
+\subsubsection{Applikationen im Kontext der aktuellen Shell}
+Das Starten eines Programmes aus der Kommandozeile ist denkbar einfach. Bereits ls ist ein Programm das wir starten. Nat\"urlich gibt es auch Programme, die nicht sofort fertig sind. Das k\"onnte sich zum Beispiel um einen Server handeln, den wir laufen lassen.\\
+Der Server kann einfach gestartet und laufengelassen werden, indem man den Befehl eintippt. Das hat aber den Nachteil, dass die Shell dann blockiert ist, das der Server darin l\"auft.\\
+Ist ein Programm im Vordergrund der Shell am laufen, so erscheint die Prompt nicht mehr und keine neuen Befehle werde akzeptiert. Will man das Programm beenden so sollte man das zuerst durch dr\"ucken von q versuchen. Viele Programme nehmen das als Signal, dass sie stoppen sollen. Funktioniert das nicht, so kann das Programm mit CTRL+C beendet werden.\\
+Nat\"urlich k\"onnen wir aber auch ein Programm starten und danach in der gleichen Shell weiterarbeiten. Dazu muss das Programm in den Hintergrund verschoben werden. Um ein Programm gleich nach dem Start in den hintergrund zu verschieben, wird einfach ein Ampersand (\&) hinten an den Befehl geh\"angt. Sofort nach dem Starten des Befehls erscheint dann wieder die Prompt und nimmt neue Befehle entgegen.\\
+Auch bereits im Vordergrund gestartete Applikationen k\"onnen in den Hingergrund verschoben werden. Dazu wird zuerste CTRL+Z bedr\"uckt, das Programm wird das Programm wird dann pausiert und die Prompt erscheint wieder. Das pausierte Programm k\"onnen wir nun entweder im Vordergrund oder im Hingergrund weiterlaufen lassen. Dazu verwenden wir de Command fg um das Programm im Vordergrund weiterlaufen zu lassen und bg um es im Hingergrund weiterlaufen zu lassen. Programme, die im Hingergrund laufen k\"onnen sp\"ater mit fg jederzeit wieder in den Vordergrund geholt werden.
+\begin{lstlisting}[frame=single]
+# mplayer im Hintergrund starten
+niklaus@holahp1101:~$ mplayer Music/sound.ogg &
+# mplayer im Vordergrund starten, dann in den Hintergrund verschieben
+niklaus@holahp1101:~$ mplayer Music/sound.ogg
+^Z
+niklaus@holahp1101:~$ bg
+# mplayer wieder in den Vordergrund holen, dann beenden
+niklaus@holahp1101:~$ fg
+^C
+\end{lstlisting}
+Nat\"urlich k\"onnen auch mehrere Programm simultan im Hintergrund laufen. Dann beziehen sich fg und bg jeweils auf die letzte Applikation. Wir k\"onnen aber auch einen bestimmten Task referenzieren. Um zu sehen welche Tasks in unserer Shell laufen brauchen wird den command jobs.\\
+jobs zeigt f\"ur jeden in der Shell laufenden Prozess eine ID (die nur in der aktuellen Shell g\"ultig ist!), den Status der Applikation und den genauen command mit dem sie gestartet wurde:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ jobs
+[1]+  Stopped                 mplayer 39\ Guten\ Morgen\ Sonnenschein.mp3
+[2]   Running                 xterm &
+[3]-  Running                 xpdf output.pdf &
+\end{lstlisting}
+Wir k\"onnen jetzt einen bestimmten Task \"uber seine Nummer referenzieren. Zum schliessen des PDF-Readers xpdf kann wie folgt vorgegangen werden:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ fg 3
+xpdf output.pdf
+^C
+\end{lstlisting}
+Startet man Programme in einer Shell im Hintergrund, muss man sich beim Schliessen der Shell gut \"uberlegen, ob die Tasks weiterlaufen sollen. M\"ochte man, dass diese auch nach dem Schliessen der Shell weiterlaufen, so sollte man unbedingt exit verwenden um die Shell zu beenden. Manche terminal emulatoren (darunter auch die popul\"are Gnome-Shell) haben die Angewohnheit alle tasks zu beenden wenn man sie anders als mit exit schliesst.
+\subsubsection{Applikationen ausserhalb des Kontexts der aktuellen Shell}
+Es ist auch m\"oglich Applikationen zu beenden, die nicht in der aktuellen Shell gestartet wurden, sondern beispielsweise aus einer anderen Shell, von einem anderen Nutzer oder von einem System-Prozess. Beim Schliessen von Tasks anderer Benutzer ist Vorsicht begoten. Zudem kann das je nach Berechtigung des eigenen Nutzer auch nicht funktionieren. Der Root User hat die Macht s\"amtliche Prozesse zu jedem beliebigen Zeitpunkt zu beenden.\\
+Um zu sehen welche Prozesse auf dem System laufen, wird ps verwendet. Um alle Prozesse angezeigt zu bekommen werden oft die Parameter -ef verwendet. Manche Nutzer m\"ogen auch -aux anstatt -ef da die Anzeige von -aux eher der von traditionellen UNIX und BSD Systemen gleicht. Ich werde mich im weiteren Verlauf auf -ef beschr\"anken. Hier ist eine gek\"urzte Ausgabe von meinem System:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 09:01 ?        00:00:01 init [3]  
+root         2     0  0 09:01 ?        00:00:00 [kthreadd]
+root         3     2  0 09:01 ?        00:00:00 [ksoftirqd/0]
+root         6     2  0 09:01 ?        00:00:00 [migration/0]
+root         7     2  0 09:01 ?        00:00:00 [migration/1]
+...
+niklaus   2761  2376  0 09:12 ?        00:00:00 /usr/bin/xterm
+niklaus   2763  2761  0 09:12 pts/1    00:00:00 bash
+niklaus   4708  2376  0 10:26 ?        00:00:00 /usr/bin/xterm
+niklaus   4710  4708  0 10:26 pts/2    00:00:00 bash
+root      5011  1297  0 10:36 ?        00:00:00 /sbin/udevd --daemon
+root      5014  1297  0 10:36 ?        00:00:00 /sbin/udevd --daemon
+...
+\end{lstlisting}
+In der ersten Spalte steht von welchem Nutzer der Prozess gestartet wurde. In der zweiten die PID, die Process ID, \"uber die wir die Applikation ansprechen k\"onnen, in der Dritten die PPID, die PID des parent-processes, zuhinterst steht der Command mit dem der Prozess gestarte wurde.\\
+Um eine Applikation zu schliessen steht der kill Befehl zur Verf\"ugung. kill, gefolgt von der PID, 'bittet' die Applikation sich zu beenden. Falls die Applikation nicht darauf reagiert und unbedingt beendet werden soll, so bietet kill den Parameter -9 an. Wird dieser verwendet, wird der Prozess auf der Stelle abgeschossen.
+\begin{lstlisting}[frame=single]
+# Den Prozess 'bitten' sich selbst zu beenden
+niklaus@holahp1101:~$ kill 2763
+# Den Prozess abschiessen
+niklaus@holahp1101:~$ kill -9 2763
+\end{lstlisting}
+Um alle tasks zu schliessen, die mit einem bestimmten Command gestartet worden sind, bietet sich killall an.
+\begin{lstlisting}[frame=single]
+# Beende alle xterms
+killall xterm
+# Erzwinge das Beenden aller xtems
+killall -9 xterm
+\end{lstlisting}
+Unter Umst\"anden kann die Ausgabe von ps -ef sehr lang werden. Mit Grep k\"onnen wir die Ausgabe nach bestimmten Begriffen durchsuchen und nur die entsprechenden Zeilen anzeigen lassen:
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ ps -ef | grep xterm
+niklaus   2394  2376  0 09:02 ?        00:00:06 /usr/bin/xterm
+niklaus   2761  2376  0 09:12 ?        00:00:00 /usr/bin/xterm
+niklaus   4708  2376  0 10:26 ?        00:00:00 /usr/bin/xterm
+niklaus  11061  2376  0 14:22 ?        00:00:00 /usr/bin/xterm
+niklaus  11111  4710  0 14:23 pts/2    00:00:00 xterm
+niklaus  11686  4710  0 14:43 pts/2    00:00:00 grep --colour=auto xterm
+# Der letzte Prozess ist unser grep selbst
+\end{lstlisting}
+Ein weiteres Tool zum suchen von PIDs ist pidof. Pidof nimmt als Parameter den Namen des Programmes das gesucht wird. Anstatt des Programmnamens kann auch der fully qualified Pfad zum Binary angegeben werden (zum Beispiel pidof /bin/bash anstatt pidof bash). Pidof gibt dann die PIDs aller Prozesse dieses Commands zur\"uck. M\"ochte man nur eine einzige PID, so hilft der Parameter -s. Um nicht nur binaries, sondern auch scripts zu beachten, verwendet man den Parameter -x.
+\begin{lstlisting}[frame=single]
+niklaus@holahp1101:~$ pidof bash
+2618 2500 2387
+niklaus@holahp1101:~$ pidof -s bash
+2618
+\end{lstlisting}
+\subsection{init Prozesse}
+Unter Linux ist jedes Programm ein Prozess und jeder Prozess hat einen Parent Prozess, der ihn gestartet hat. Es gibt keine Ausnahmen! Absolut alles, einschliesslich der grafischen Oberfl\"ache ist ein Prozess. Der oberste Prozess, der als erstes gestartet wurde und der all die anderen initialisiert hat ist init. Init tr\"agt die PID 1.\\
+Im Verlauf des Systemstarts startet init weitere inti Prozesse. Start und stop Skripte f\"ur init Prozesse liegen in /etc/init.d. Manchmal ist es notwendig, einen init-daemon neu zu starten. Zum Beispiel wenn die Netzerkkonfiguration neu geschrieben wurde, muss networking neu gestartet werden damit die \"Anderungen angewandt werden. Die init Skripte in /etc/init.d unterst\"utzen die Befehle start, stop und restart. Verwendet werden sie wie folgt:
+\begin{lstlisting}[frame=single]
+holahp1101 / # /etc/init.d/network restart
+ * Stopping network             [ ok ]
+ * Starting network 	   	[ ok ]
+\end{lstlisting}
+Init Skripte k\"onnen nur vom Nutzer root gestartet und gestoppt werden.
