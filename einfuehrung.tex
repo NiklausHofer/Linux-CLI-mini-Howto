@@ -1,26 +1,26 @@
 \section{Einf\"uhrung}
-Unger Linux ist / das root directory, alles im System liegt unter /.\\
+Unter Linux ist / das root directory, alles im System liegt unter /.\\
 \subsection{Das Homedirectory}
 Jeder Nutzer hat ein home-directory. Theoretisch kann sich das \"uberall auf dem System befinden, in der Praxis ist es aber fast immer unter /home/username, also zum Beispiel /home/patrick. Das homedirectory kann mit dem K\"urzel ~ referenziert werden.\\
 Neben den vom Nutzer selbst angelegten Ordnern wie Music oder work, befinden sich im home-directory auch die privaten Einstellungen und Anwendungsdaten zu allen Applikationen. Einstellungen die der Nutzer an einer Applikation vornimmt werden ausschliesslich hier abgelegt. Die Einstellungen und Anwendungsdaten sind in 'versteckten' Ordnern oder Dateien abgelegt, damit sie beim Navigieren auf dem Dateisystem nicht st\"andig durch ihre Anwesenheit ablenken. Versteckte Ordner unter Linux/Unix sind daran zu erkennen, dass sie eine Punkt vor dem Namen tragen. Die Datei note.txt ist also immer sichtbar, die Datei .note.txt hingegen nicht.\\
-Anwendungen die nur eine einzige Konfigurationsdatei ben\"otigen erstellen meist ein .<anwendung>rc file, zum Beispiel .bashrc oder .vimrc. Programme die mehr Dateien ben\"otigen legen h\"aufig ein Verzeichnis an, das nach .<applikation> benannt ist, zum Beispiel .libreoffice. Manche Applikationen, meist modernere, legen auch ein Verzeichnis unter .config ab. Chrome/Chromium speichert die Einsellungen, Caches und history zum Beispiel unter ~/.config/chromium ab.\\
+Anwendungen die nur eine einzige Konfigurationsdatei ben\"otigen erstellen meist ein .<anwendung>rc file, zum Beispiel .bashrc oder .vimrc. Programme die mehr Dateien ben\"otigen legen h\"aufig ein Verzeichnis an, das nach .<applikation> benannt ist, zum Beispiel .libreoffice. Manche Applikationen, meist modernere, legen auch ein Verzeichnis unter .config ab. Chrome/Chromium speichert die Einstellungen, Caches und history zum Beispiel unter ~/.config/chromium ab.\\
 Dadurch, dass alle Applikationsdaten hier gespeichert sind, hat der Nutzer einfachen Zugriff darauf. Hat man die Konfiguration eines Programmes verschossen, so gen\"ugt es, den entsprechenden Ordner zu l\"oschen um das Programm auf die Standardeinstellunge zur\"uck zu setzen.\\
 Dadurch dass alle Programmeinstellungen zentral im home-directory abgelegt sind, macht es auch Sinn, /home auf einer eigenen Partition zu lagern, wenn der Rechner als PC eingesetzt wird. M\"ochte man das System neu aufsetzen, so kann man danach einfach /home wieder einbinden und alle Daten und Einstellungen sind sofort wieder verwendbar!
 \subsection{.bashrc}
 Ein der wichtigsten Datein im home-directory ist die .bashrc Datei. Beim starten von Bash (was heute bei den meisten Distributionen beim Login oder beim Starten einer Shell geschieht) wird sie ausgef\"uhrt und als Konfiguration f\"ur Bash verwendet.\\
 Der gr\"osste Teil der .bashrc Datei sollte vom Nutzer nur dann ver\"andert werden, wenn er wirklich weiss was er tut. Interessant ist aber der unterste Abschnitt. Hier k\"onnen aliases festgelegt werden. Diese dienen als Abk\"urzungen f\"ur Shellcommands. Ein Alias wird nach folgendem Schema definiert:
-\begin{lstlisting}[frame=single, style=Shell]
+\begin{lstlisting}
 alias shortcut="command -with arguments"
 \end{lstlisting}
 Ein Alias der auf den meisten Distributionen bereits definiert ist ist ll (wird im Verlauf des Dokuments erkl\"art). Der Author empfielt den Alias ll auf folgenden Wert zu \"andern:
-\begin{lstlisting}[frame=single, style=Shell]
+\begin{lstlisting}
 alias ll="ls -lAh"
 \end{lstlisting}
 Zudem empfielt sich ein alias c f\"ur clear, wenn clear des \"ofteren verwendet wird:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 alias c="clear"
 \end{lstlisting}
 Nachdem die .bashrc bearbeitet wurde werden die \"Anderungen beim n\"achsten Start der bash angewandt. M\"ochte man die \"Anderungen sofort answenden, so kann die .bashrc \"uber folgenden command neu eingelesen werden:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 source ~/.bashrc
 \end{lstlisting}

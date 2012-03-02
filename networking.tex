@@ -4,7 +4,7 @@ Auf servern sind solche Tools aber nicht verf\"ugbar und auch viele Poweruser be
 \subsection{/etc/networks/interfaces}
 Ist nichts anderes definiert, so nutzt Linux die Datei /etc/networks/interfaces zur Konfiguration der Netzwerkkarten. Der erste Eintrag in dieser Datei ist meistens lo. Lo steht f\"ur Loopback und beschreibt das Loopback interface das der Rechner zur Kommunikation mit sich selbst verwendet. Dieser Eintrag sollte nicht ver\"andert oder gel\"oscht werden!\\
 Danach folgen die Eintr\"age f\"ur die Netzerkkarten. Die erste Physikalische Ethernet-Schnittstelle heisst eth0, bei weiteren wird die Zahl am Ende hochgez\"ahlt. Das erste WLan interface heisst wlan0. Ein Eintrag in der interfaces Datei k\"onnte in etwa so aussehen:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # Start eth0 at bootup
 auto eth0
 # static IP
@@ -16,22 +16,22 @@ iface eth0 inet static
 Dieses Beispiel zeigt die im Minimum erforderlichen Optionen um der Netzwerkkarte eine statische IP zuzuteilen. Die Option auto eth0 definiert hier, dass das Interface eth0 beim Booten des Systems gestartet werden soll. Will man das nicht, so kann diese Zeile einfach weggelassen werden. Der Wert inet besagt, dass wir im Folgenden IPv4 Optionen definieren. Um IPv6 zu konfigurieren kann inet durch inet6 ersetzt werden. Static legt fest, dass eine fixe IP verwendet wird. Die nachfolgenden Optionen erfordern grundlegende Kenntnisse eines IPv4 Netzerkes, sind ansonsten aber selbserkl\"arend.\\
 Weitere verf\"ugbare Optionen sind network (in diesem Fall 192.168.0.0) und broadcast (hier 192.168.0.255).\\
 Bei Desktop Systemen ist oft die Verwendung von DHCP erw\"unscht. Die Konfiguration daf\"ur ist denkbar einfach:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # Start eth0 at bootup
 auto eth0
 iface eth0 inet dhcp
 \end{lstlisting}
 Damit das funktioniert, ist nat\"urlich auch in DHCP client n\"otig. Falls noch keiner installiert ist, kann dhclient verwendet werden. DHClient kann mit
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@sysem~$ /etc/init.d/dhcpcd start
 \end{lstlisting}
 gestartet werden. Der daemon l\"asst dann den dhcp client auf allen nicht konfigurierten Interfaces laufen. Je nach Distribution wird auch dhclient verwendet. Um dhclient auf einem bestimmten Interface zu verwenden, ist folgender Befehl zu verwenden.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ dhclient eth0
 \end{lstlisting}
 \subsection{resolv.conf}
 Abgesehen von der Netzerkkarte muss nat\"urlich auch der DNS Server angegeben werden. Das geschieht \"uber die Datei /etc/resolv.conf, das eine sehr einfache Syntax bietet.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 nameserver 192.168.0.1
 nameserver 8.8.8.8
 nameserver 8.8.4.4
@@ -39,14 +39,14 @@ nameserver 8.8.4.4
 Die aufgelisteten Server werden dabei in der Reihenfolge der Eintragung priorisiert.
 \subsection{Netzerk starten}
 Ist das Netzwerk fertig konfiguriert, so kann es neu gestartet werden. Damit alle Einstellungen neu eingelesen werden, wird das Networking modul neu gestartet.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ /etc/init.d/network restart
  * Starting network
 \end{lstlisting}
 Die Einstellunge k\"onnen jetzt getestet und verwendet werden.
 \subsection{ifconfig}
 Um die aktuelle Konfiguration einzusehen, wird ifconfig verwendet. Je nach Distribution k\"onnen alle Nutzer oder nur Root ifconfig verwenden. Wird ifconfig ohne weitere Argumente ausgef\"uhrt, so zeigt es die aktuelle Konfiguration aller verf\"ugbaren und gestartetn Netzerkkarten an. Als Parameter kann der Name eines Netzerkinterfaces angegeben werden, dann wird nur dessen Konfiguration angezeigt.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ ifconfig wlan0
 wlan0     Link encap:Ethernet  HWaddr ac:81:12:32:e5:b1  
           inet addr:10.22.53.244  Bcast:10.22.53.255  Mask:255.255.255.0
@@ -58,7 +58,7 @@ wlan0     Link encap:Ethernet  HWaddr ac:81:12:32:e5:b1
           RX bytes:784 (784.0 B)  TX bytes:2061 (2.0 KiB)
 \end{lstlisting}
 Ifconfig kennt auch Optionen um das Interface zu konfigurieren. Um die im obigen config file angegebene Konfiguration per ifconfig auf ein Interface anzuwenden kann dieser Befehl verwendet werden:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ ifconfig eth0 address 192.168.0.100 netmask 255.255.255.0 broadcast 192.168.0.255
 root@system~$ ifconfig eth0
 eth0      Link encap:Ethernet  HWaddr b4:99:ba:e1:16:0e  
@@ -67,20 +67,20 @@ eth0      Link encap:Ethernet  HWaddr b4:99:ba:e1:16:0e
 \end{lstlisting}
 Das broadcast Arguemnt ist dabei Optional, da der Linux networking stack diese auch anhand der IP und netmask berechnen kann. F\"ur weitere Details zu diesen und weiteren Argumenten, referenzieren Sie bitte die ifconfig manpage.\\
 Ifconfig kann auch verwendet werden um einzelne Interfaces an oder abzustellen. Dazu werden die Optionen up und down verwendet.\\
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ ifconfig wlan0 down
 root@system~$ ifconfig wlan0 up
 \end{lstlisting}
 \subsection{route}
 Der aufmerksame Leser hat nat\"urlich bemerkt (:p), dass wir beim manuellen definieren der Netzerkschnittstelle per ifconfig den default gateway nicht angegeben haben. Dadurch weiss Linux jetzt aber nicht, wie es Hosts und Netzwerke ausserhalb des aktuellen subnets erreichen kann. Die entsprechende Einstellung kann nicht \"uber ifconfig vorgenommen werden. Stattdessen verwenden wir hier den route command. Mit ihm kann die routing table des Systems ausgelesen und manipuliert werden. Es kommt nur selten vor, dass man im allt\"aglichen Gebrauch die Routingtable editieren muss (es sei denn, man arbeite viel mit Netzwerken oder hat ganz bestimmte W\"unsche), und wenn man es doch mal tun muss, so gen\"ugt meistens das setzen der default route. route ohne Argumente zeigt die aktuelle routingtable an:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ route
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 loopback        -               255.0.0.0       !     0      -        0 -
 \end{lstlisting}
 Hier hat das System noch keine default route. Diese beschreibt, welcher 'Weg' zu nehmen ist, um mit anderne Netzwerken in Kontakt zu treten. Die default route wird immer dann verwendet wenn f\"ur das Ziel-Netzwerk kein anderer Eintrag in der routing table vorhanden ist (also meistens). Meistens ist das einfach die IP des lokalen Routers. Das hinzuf\"ugen einer neuen Route ist denkbar einfach:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ route add default gw 192.168.0.1
 root@system~$ route
 Kernel IP routing table
@@ -89,7 +89,7 @@ default         192.168.0.1     0.0.0.0         UG    304    0        0  eth0
 loopback        -               255.0.0.0       !     0      -        0 -
 \end{lstlisting}
 Dieses Ger\"at hier hat zwei Interfaces, ein Ethernet und ein WLAN. Mit route kann ich das System anweisen wlan0 zu nutzen um mit dem Wlan zu kommunizieren und eth0 f\"urs Lan, den default gateway \"uber eth0 haben wir im vorderen Beispiel bereits gesetzt:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 root@system~$ route add -net 192.168.2.0 netmask 255.255.255.0 dev wlan0
 root@system~$ route add -net 192.168.1.0 netmask 255.255.255.0 dev eth0
 root@system~$ route
@@ -105,7 +105,7 @@ IPtables ist eine Applikation um die Paketfilter im Kernel zu definieren. Mithil
 \subsection{Weitere Netowrking tools}
 \subsubsection{host}
 Host ist ein einfach zu bedienendes Tool zum Aufl\"osen von Hostnamen in IP Adressen und umgekehrt. Mit der -v Option zeigt der host command noch details zum verwendeten Query an.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ host www.google.com
 www.google.com		CNAME	www.l.gogle.com
 www.l.google.com	A	74.125.39.103
@@ -120,7 +120,7 @@ Address: 74.125.39.104
 nslookup kennt zwei Modi: den 'passiven' Modus und einen 'interaktiven'. Im passiven Modus ist nslookup genau gleich zu bedienen wie der host command. Im interaktiven Modus jedoch, bietet nslookup viele weitere Optionen. Um den interaktiven Modus zu starten, gibt man einfach nslookup ohne weitere Argumente ein. Die standard Prompt wird dann durch eine spitze Klammer ersetzt. Kommandos die jetzt eingegeben werden, gehen direkt an nslookup. Dieser Modus kann per exit wieder verlassen werden.\\
 Werden keine weiteren Angaben gemacht, so benutzt nslookup den standard DNS server. Mit 'lserver domain' kann der zu verwendende Server festgelegt werden. Ein query kann mit 'host' abgesetzt werden. Weitere Optionen k\"onnen in manfile nachgeschlagen werden.
 %TODO research!
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ nslookup
 > server swisscom.ch
 > host heise.de
@@ -128,6 +128,6 @@ niklaus@holahp1101:~$ nslookup
 \subsubsection{traceroute, tracepath}
 Traceroute und tracepath k\"onnen die network hops bis zu einem definierten host anzeigen. Je nach Distribution sind beide oder nur eines der Programme verf\"ugbar. Traceroute bietet dabei viel mehr Optionen an als tracepath. Weitere Informationen dazu sind in der jeweiligen manpage zu finden. Die grundlegende Verwendung von traceroute ist denkbar einfach:
 %TODO research!
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101~$ traceroute www.google.com
 \end{lstlisting}

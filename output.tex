@@ -4,25 +4,25 @@ Die Shell kennt zwei Ausgaben, die Standard-Ausgabe (standard out) und die Error
 Der Output von Applikationen kann in eine Datei geschrieben werden. So kann man einfach Dinge dokumentieren. Beim schreiben von Scripts die automatisch ausgef\"hurt werden, ist es empfehlenswert den Output in eine Logdatei zu schreiben, damit man die Vorg\"ange sp\"ater nachvollziehen kann.
 \subsubsection{Standard out}
 Das Umleiten des Standard out in eine Datei ist einfach und intuitiv. Dazu wird einfach das Zeichen \textgreater, gefolgt von der Zieldatei, hinten an den Command geschrieben. Mit folgendem Kommando wird die aktuelle IP-Konfiguration von eth0 in eine Datei geschrieben:
-\begin{lstlisting}[frame=single, style=shell]
+\begin{lstlisting}
 niklaus@holahp1101:~$ ifconfig eth0 > eth0_config
 \end{lstlisting}
 Das einfache \textgreater ueberschreibt die Datei jedes Mal komplett. Das ist nicht immer gew\"unscht. Wir k\"onnen den Output auch jeweils an das Ende der Datei anh\"angen. Dazu verwenden wir den \textgreater\textgreater redirect. In folgendem Beispiel schreiben wir unter die Interface config noch die DNS Konfiguration.
-\begin{lstlisting}[frame=single, style=shell]
+\begin{lstlisting}
 niklaus@holahp1101:~$ ifconfig eth0 > eth0_config
 niklaus@holahp1101:~$ cat /etc/resolv.conf >> eth0_config
 \end{lstlisting}
 In manchen F\"allen m\"ochte man den Standard out aber nicht in eine Datei schreiben, sondern einfach loswerden. Zu diesem Zweck kann man ihn in den virtuellen /dev/null Datentr\"ager umleiten. Das wird oft dann gemacht, wenn ein Task im Hintergrund laufen soll w\"ahrend man im gleichen Terminal weiterarbeiten will:
-\begin{lstlisting}[frame=single, style=shell]
+\begin{lstlisting}
 niklaus@holahp1101:~$ sudo apt-get update > /dev/null &
 \end{lstlisting}
 Der \textgreater Operator kann auch zum 'leeren' einer Datei verwendet werden:
-\begin{lstlisting}[frame=single, style=shell]
+\begin{lstlisting}
 niklaus@holahp1101:~$ > eth0_config
 \end{lstlisting}
 \subsubsection{Error Output}
 Die Errors werden von Applikationen nicht in den Standard Out geschrieben, sondern in einen speziellen, den Error-, Output. Das ist n\"utzlich, da man sich beim Verarbeiten von Programm-Output nicht \"uberlegen muss, was denn geschieht wenn eine Fehlermeldung ausgegeben wird anstatt des erwarteten Outputs. Die Fehlermeldungen kann man so einfach eigens verarbeiten. Zum Umleiten des Fehleroutputs verwendet man '2\textgreater'. M\"ochte man weder vom Standard Out, noch von Fehlermeldungen gest\"ort werden, so leitet man einfach beide Outputs um.
-\begin{lstlisting}[frame=single, style=shell]
+\begin{lstlisting}
 niklaus@holahp1101:~$ sudo apt-get update > /dev/null 2> /dev/null &
 \end{lstlisting}
 \subsection{pipes}
@@ -30,15 +30,15 @@ Einer der gr\"ossten Vorteile der Shell ist, dass verschiedene Applikationen mit
 Das Zeichen um zwei Programme miteinander zu verbinden ist | , genannt pipe. Der Standard-output (das was auf der Shell zu sehen ist) wird dabei zum standard-input des Programmes hinter |.
 \subsection{Filtern des outputs}
 Grep kann nicht nur Dateien durchsuchen und filtern, sondern auch standard input. Dazu wird grep einfach per pipe hinten an einen anderen command geh\"angt, der zu suchende Begriff wird einfach als Parameter angeh\"angt. Ein typisches Beispiel ist die Verwendung von grep zum durchsuchen der ps Ausgabe nach einem bestimmten Prozess. Ein sehr anschauliches, wenn auch nicht besonders sinnvolles, Beispiel ist das Filtern des Outputs von cat.
-\begin{lstlisting}[frame=single, style=Shell]
+\begin{lstlisting}
 niklaus@holahp1101:/usr/src/linux$ cat CREDITS | grep Kroah
 N: Greg Kroah-Hartman
 \end{lstlisting}
 Wie bereits erw\"ahnt, ist dier Command nicht besonders ellegant, da Grep die Datei auch selbst\"andig einlesen kann.
-\begin{lstlisting}[frame=single, style=Shell]
+\begin{lstlisting}
 grep Kroah CREDITS
 \end{lstlisting}
 Grep ist ein sehr m\"achtiges Tool, es ist aber nicht die einzige M\"oglichkeit und es ist nicht f\"ur alle Aufgaben geeignet. Noch weit m\"achtiger als Grep ist AWK. AWK ist aber nicht nur ein einfaches Programm, sondern eigentlich eine eigene Programmiersprache. Ich mache hier nur ein einfaches Beispiel f\"ur die Verwendung von awk. (nah, was macht das wohl? :D, Challenge for the user!)
-\begin{lstlisting}[frame=single, style=Shell]
+\begin{lstlisting}
 ls -lh --time-style="+%D %T" .bashrc | awk '{ print $6,$7"\t"$5"\t"$8 }'
 \end{lstlisting}

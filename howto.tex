@@ -9,6 +9,7 @@
 \usepackage{pdflscape}		%allows landscape mode
 \usepackage{listings}
 \usepackage{courier}
+\usepackage{MnSymbol}
 
 \lstset{
   language=C,
@@ -16,10 +17,20 @@
   commentstyle=\ttfamily,
   showspaces=false
 }
-\lstdefinestyle{Shell}{delim=[il][\bfseries]{BB}}
+%\lstdefinestyle{Shell}{delim=[il][\bfseries]{BB}}
+% The cool arrows at linebreak are from here:
+% http://stackoverflow.com/questions/1965702/latex-line-breaking-of-long-lines-how-to-mark-these
 \definecolor{lightgray}{rgb}{.9,.9,.9}
 \lstset{
-  backgroundcolor=\color{lightgray}
+  language=bash,
+  prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\rhookswarrow}},
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\rcurvearrowse\space}},
+  backgroundcolor=\color{lightgray},
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  showspaces=false,
+  frame=single
 }
 
 \setcounter{tocdepth}{5}        	%include everything, including subparagraph in tableofcontents

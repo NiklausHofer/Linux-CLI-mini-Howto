@@ -14,6 +14,10 @@ Einige Applikationen, die nur nach dem manuellen Download installiert werden k\"
 \subsection{Ubuntu}
 Da ich dieses Dokument f\"ur einen Ubuntu user erstelle, konzentriere ich mich von hier an nur noch auf das Paket management von Ubuntu.
 \subsection{dpgk und apt}
-Das Paketmanagement von Ubuntu basiert auf dpkg, dem Debian Package Manager. Dieser installiert und verwatet die Pakete mit der .deb Endung.
+Das Paketmanagement von Ubuntu basiert auf dpkg, dem Debian Package Manager. Dieser installiert und verwatet die Pakete mit der .deb Endung. DPKG Packete k\"onnen nat\"urlich manuell offline installiert werden.
+\begin{lstlisting}
+niklaus@locmsghub:~/Downloads$ sudo dpkg -i opera.dpgk
+\end{lstlisting}
+Wenn immer m\"oglich sollte man aber Pakete aus den Repositories der Distribution beziehen.
 
 \subsubsection{apt}

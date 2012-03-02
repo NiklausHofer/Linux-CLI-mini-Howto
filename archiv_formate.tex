@@ -8,7 +8,7 @@ Gzip ist auf absolut jedem Linux bereits vorhanden. Das gilt heute zumeist aus f
 Hier sind die meistverwendeten Befehler zum Erstellen und Entpacken der popul\"arsten Archiv Fomrate:
 \begin{description}
 \item[zip] \hfill \\
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # zip one or several files
 zip new_archive.zip file1 file2
 # zip a directory
@@ -17,7 +17,7 @@ zip -r new_archive.zip folder1 folder2
 unzip archive.zip
 \end{lstlisting}
 \item[rar] \hfill \\
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # create a rar arive
 rar a new_rar_archive.rar folder1 file1
 # unrar
@@ -26,7 +26,7 @@ unrar x archive.rar
 unrar x -e file.part1.rar
 \end{lstlisting}
 \item[7z] \hfill \\
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # create 7z archive with strongest compression possible
 7z a -t7z -m0=lzma -mx=9 -mfb=64 =md=32m -ms=on new_archive.7z folder1
 # Dafuer wuerde ich auf jeden Fall einen Alias anlegen
@@ -40,14 +40,14 @@ cat *.7z >> output.7z
 7z x output.7z
 \end{lstlisting}
 \item[Tar] \hfill \\
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # erstellen
 tar cfv new_archive.tar folder1 file1 folder2
 # entpacken
 tar xfv archiv.tar
 \end{lstlisting}
 \item[gzip] \hfill \\
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # Datei komprimieren
 gzip datei
 # dekomprimieren
@@ -58,7 +58,7 @@ tar cfvz neues_archiv.tar.gz ordner1 ordner2 datei1
 tar xfvz archiv.tar.gz
 \end{lstlisting}
 \item[bzip2] \hfill \\
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # Datei komprimieren
 bzip2 datei
 # Datei dekomprimieren

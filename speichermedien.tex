@@ -6,7 +6,7 @@ SATA und USB Speichermedien werden mit sd(a-z) benannt, PATA/IDE Medien mit hd(a
 Die erste Festplatte im System tr\"agt als den Namen sda und ist unter /dev/sda zu finden.\\
 Die Partitionen auf der Platte werden hochgez\"ahlt. Die erste Partition auf der ersten Platte ist sda1, die 5te Partition auf der dritten Platte sdc5. gemounted werden die Partitionen, nicht die Platten selbst.\\
 Zudem werden die Partitionen in modernen Linux distributionen mit einer eindeutigen ID, der sogenannten UUID, bezeichnet. Wird zum mounten diese ID verwendet anstatt des sda/hda Namens spielt es keine Rolle in welcher Reihenfolge die Speichermedien mit dem System verbunden wurden. Ubuntu benutzt zum Mounten der Systempartitionen immer die UUIDs. Die Partitionen werden in /dev/disk/by-uuid/ mit ihrere UUID referenziert. Um die UUID einer Partition zu ermitteln kann entweder vol\_id --uuid oder blkid verwendet werden.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 vol_id --uuid /dev/sda1
 72dd0978-e1a1-4dfb-af24-4e3b1eb4b4eb
 # blkid zeigt die UUIDs aller Partitionen an
@@ -20,17 +20,17 @@ holahp1101 dev # blkid
 \subsection{mount}
 In Linux kann ein Speichermedium in ein beliebiges Verzeichnis gemounted werden. Ein typisches Beispiel ist /home, das h\"aufig auf einer eigenen Partition liegt. Wenn das die zweite Partition auf der ersten Festplatte ist, so ist /dev/sda2 auf /home gemounted. Ein anderes Beispiel sind die USB Speichermedien die meistens nach /media/<name des speichermediums> gemounted werden.\\
 Laufwerke k\"onnen mit dem mount command auch manuell eingeh\"angt werden. Mount kann meistens nur von Root ausgef\"uhrt werden. Um ein Ger\"at zu mounten gen\"ugt
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # mount medium mountpoint
 mount /dev/sdb1 /home
 \end{lstlisting}
 F\"ur mount gibt es aber auch verschidenen Parameter. -o rw zwingt mount das Dateisystem writable zu mounten (falls irgend m\"oglich), mit -t <type> kann der Typ des Dateisystems angegeben werden.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 mount -o rw -t ntfs /dev/sdc1 /media/gibbix
 # ACHTUNG: das Verzeichnis /media/gibbix muss zuerste erstellt werden.
 \end{lstlisting}
 Zum Aush\"angen der Partition wird umount verwendet.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 umount /dev/sdc1
 # oder
 umount /media/gibbix
@@ -43,11 +43,11 @@ Funktioniert das aus irgend einem Grund nicht, so kann man das Device manuell al
 \item handelt es sich um ein FAT/NTFS Dateisystem, so ist der root user danach der einzige der vollen Zugriff darauf hat.
 \end{itemize}
 Einfacher geht es mit dem tool pmount. Der Befehl
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 pmount /dev/sdc1
 \end{lstlisting}
 h\"angt sdc1 automatisch in ein passend benanntes Verzeichnis in /media. Dieses wird entweder nach dem Speichermedium benannt (falls dieses einen Namen tr\"agt), oder nach dessen /dev namen (/media/sdc1 oder /media/usbhd-sdc1). Die Zugriffsrechte f\"ur das Ger\"at sind dann automatisch so gesetzt, dass der Nutzer der pumount ausf\"uhrte vollen Zugriff darauf hat. Wird das Verzeichnis per
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 pumount /dev/sdc1
 \end{lstlisting}
 wieder ausgeh\"angt, so wird der Ordner in /media automatisch wieder gel\"oscht.

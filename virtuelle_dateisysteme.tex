@@ -10,7 +10,7 @@ Hier einige Anwendungszwechek f\"ur diese virtuellen Devices:
 \begin{description}
 \item[Output umleiten] \hfill \\
 Wird ein Programm in der Konsole gestartet, so gibt es von Zeit zu Zeit Output zur\"uck. M\"ochte man aber in der gleichen Konsole weiterarbeiten kann das l\"astig sein. Der Output kann deshalb nach /dev/null umgeleitet werden. Zudem k\"onnen Fehlermeldunen wahlweise ebenfalls oder eben nicht umgeleitet werden.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # Umleiten des outputs
 dhcpd > /dev/null &
 # Umleitung der output und der Fehlermeldungen
@@ -18,19 +18,19 @@ dhcpd > /dev/null 2> /dev/null &
 \end{lstlisting}
 \item[Erstellen einer beliebig grossen Testdatei] \hfill \\
 Eine beliebig grosse Testdatei kann mit dd und wahlweise /dev/zero oder /dev/urandom generiert werden. Eine solche Datei kann zum Beispiel zum Messen der Performance einer Anwendung verwendet werden. ACHTUNG: In diesem Beispiel wird dd verwendet. dd tut genau das, wozu es angewiesen wird. Wird ihm, aus Versehen oder willentlich, gesagt ben MBR der Systemplatte zu \"uberschreiben, so tut es das! Es ist deshalb Vorsicht geboten.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # create a 512MB testfile with random data
 dd if=/dev/urandom of=~/testfile bs=1M count=512
 \end{lstlisting}
 \item[\"Uberschreiben des MBR] \hfill \\
 Der 512byte grosse Bootsektor l\"asst sich einfach mit Nullen \"uberschreiben. Dadurch verschwindet die Partitionstabelle und der Bootloader.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # MBR der zweiten Festplatte im System
 dd if=/dev/zero of=/dev/sdb bs=1 count=512
 \end{lstlisting}
 \item[\"Uberschreiben einer Festplatte mit Zufallszahlen] \hfill \\
 Vor dem Weiterverkauf einer Festplatte sollten alle Daten darauf \"uberschrieben werden, z.B. mit Zufallszahlen.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 dd if=/dev/urandom of=/dev/sdb bs=1M
 \end{lstlisting}
 \end{description}

@@ -1,7 +1,7 @@
 \section{Dateien}
 \subsection{cat und less}
 Um den Inhalt einer Datei anzuzeigen kann cat verwendet werden. Es gibt den gesammten Inhalt der Datei auf dem Bildschirm aus.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 cat shc.sh
 while [ true ]
 do
@@ -13,8 +13,8 @@ done
 Ist die Datei zu gross um sie in einem St\"uck auf dem Monitor darzustellen, hilft less. Es \"offnet die Datei und stellt sie scrollbar dar. Mit den Pfeiltasten kann gescrollt werden, mit q wird die Ansicht verlassen.
 \subsection{tail}
 Der Tail Command zeigt die letzten zehn Zeilen einer Datei an. Der wirkliche Nutzen von tail liegt aber in der Option '-f'. -f steht f\"ur follow. Wird eine Datei mit tail -f ge\"offnet, so werden neue Zeilen die in die Datei geschrieben werden jeweils von tail dargestellt. tail -f kann also auch eine Logdatei gestartet werden. Anstatt sich nach dem Anzeigen der letzten 10 Zeilen zu beenden, l\"auft tail weiter bis es vom Nutzer beendet wird.
-\begin{lstlisting}[frame=single]
-root@system~$ tail /var/log/kernel/current
+\begin{lstlisting}
+root@system~$ tail -f /var/log/kernel/current
 Nov 08 15:11:58 [kernel] [ 2152.278052] ieee80211 phy0: wl_ops_bss_info_changed: arp filtering: enabled false, count 1 (implement)
 Nov 08 15:11:58 [kernel] [ 2152.287072] cfg80211: Calling CRDA for country: CH
 Nov 08 15:12:01 [kernel] [ 2154.637767] ieee80211 phy0: wl_ops_config: change monitor mode: false (implement)
@@ -29,7 +29,7 @@ Nov 08 16:13:28 [kernel] [ 5835.299962] EXT4-fs (sda4): re-mounted. Opts: errors
 \end{lstlisting}
 \subsection{file}
 Der file command zeigt an um was f\"ur einen Dateitypen es sich bei einer Datei handelt und das unabh\"angig von der Endung im Dateinamen.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ file hackers.odp 
 hackers.odp: OpenDocument Presentation Zip archive data
 niklaus@holahp1101:~$ file chaos_theory_480p.webm 
@@ -39,7 +39,7 @@ shc.sh: ASCII text
 \end{lstlisting}
 \subsection{touch}
 Der Befehl touch wird verwendet um das \"Anderungsdatum einer Datei zu verstellen. Mit touch datei wird das \"Anderungsdatum der Datei auf den Zeitpunkt der Ausf\"uhrung gestellt:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ ll shc.sh 
 -rwxr-xr-x 1 niklaus users 61 Aug 26 23:07 shc.sh
 niklaus@holahp1101:~$ touch shc.sh 
@@ -47,7 +47,7 @@ niklaus@holahp1101:~$ ll shc.sh
 -rwxr-xr-x 1 niklaus users 61 Nov  1 10:03 shc.sh
 \end{lstlisting}
 Das ist zwar eher ein Randfall, touch hat aber noch eine andere sehr n\"utzliche Funtion. Wendet man touch auf eine nicht existente Datei an, so wird diese als leere Datei angelegt:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ ll test
 ls: cannot access test: No such file or directory
 niklaus@holahp1101:~$ touch test
@@ -56,7 +56,7 @@ niklaus@holahp1101:~$ ll test
 \end{lstlisting}
 \subsection{grep}
 Grep ist ein m\"achtiger und schneller Filter f\"ur Textdateien.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # grep searchterm file.ending
 niklaus@holahp1101:~/wpa_supplicant-0.7.3/src/crypto$ grep sha1 sha1-pbkdf2.c 
 #include "sha1.h"
@@ -65,7 +65,7 @@ static int pbkdf2_sha1_f(const char *passphrase, const char *ssid,
 
 \end{lstlisting}
 Wie alle Unix tools ist auch grep case-sensitive. Um nach dem Suchbegriff unabh\"angig der Gross/Kleinschreibung zu suchen, kann der Parameter -i verwendet werden. Um Die Zeilennummern anzuzeigen, wird -n verwendet:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~/wpa_supplicant-0.7.3/src/crypto$ grep -i -n sha1 sha1-pbkdf2.c 
 2: * SHA1-based key derivation function (PBKDF2) for IEEE 802.11i
 18:#include "sha1.h"
@@ -73,14 +73,14 @@ niklaus@holahp1101:~/wpa_supplicant-0.7.3/src/crypto$ grep -i -n sha1 sha1-pbkdf
 26:     unsigned char tmp[SHA1_MAC_LEN], tmp2[SHA1_MAC_LEN];
 \end{lstlisting}
 Grep kann auch auf allle Dateien im aktuellen Verzeichnis angewant werden.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~/wpa_supplicant-0.7.3/src/crypto$ grep -i -n pbkdf2 * 
 Makefile:39:    sha1-pbkdf2.o \
 sha1-pbkdf2.c:2: * SHA1-based key derivation function (PBKDF2) for IEEE 802.11i
 sha1-pbkdf2.c:22:static int pbkdf2_sha1_f(const char *passphrase, const char *ssid,
 \end{lstlisting}
 Oder rekursiv auf alle Dateien in einem Verzeichnisbaum. Dazu wird die Option -r verwendet. Ausserdem ist hier die Option -l anzuraten. -l zeigt anstatt der gefundenen Zeilen nur die Namen der Dateien an, die den gesuchten String enthalten.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ grep -i -l -r pbkdf2 wpa_supplicant-0.7.3/*
 wpa_supplicant-0.7.3/src/crypto/sha1-pbkdf2.c
 wpa_supplicant-0.7.3/src/crypto/sha1.h
@@ -99,33 +99,33 @@ wpa_supplicant-0.7.3/wpa_supplicant/Makefile
 Als Suchbegriff nimmt grep auch regex entgegen.
 \subsection{find und locate}
 Der Befehl find ist sehr m\"achtig, kann aber auch sehr komplex werden. Ich werde hier nur einige Beispiele zur Verwendung von find geben, da der Command mit all seinen Optionen zu komplex ist um hier erkl\"art zu werden. F\"ur weitergehende Funktionalit\"at referenzieren Sie bitte die manpage zu find.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 man find
 \end{lstlisting}
 (Verwenden Sie q um die manpage zu verlassen).\\
 Die wohl h\"aufigste Verwendung von find ist das rekursive Suchen nach Dateien mit einem Begriff im Namen. Find sucht standardm\"assig rekursiv vom aktuellen Verzeichnis aus. M\"ochten wir eine Liste aller .txt Daeien in unserem homedirectory, so k\"onnen wir den find command wie folgt verwenden:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 find -name *.txt
 \end{lstlisting}
 Nat\"urlich ist auch find case sensitive. Um das beim obigen Suchbefehl abzuschalten, verwenden wir anstatt des parameters -name den Parameter -iname.\\
 Find muss nicht zwingend auf das aktuelle Verzeichnis angewant werden. Um ein anderes Verzeichnis zu durchsuchen, geben wir dieses als ersten Parameter an:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ find ~/spideroak -iname *.txt*
 spideroak/gentoo_todo.txt
 \end{lstlisting}
 Einer der Gr\"unde weshalb der find command so m\"achtig ist, ist der, dass er automatisch einen Befehl auf alle gefundenen Dateien anwenden kann. Es gibt auch daf\"ur viele M\"oglichkeiten um verschidene usecases abzudecken. Hier nur ein einfaches Beispiel:\\
 Finde alle .mp4 Dateien mit dem Wort pron im Namen und verschiebe sie auf ein externes Speichermedium.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 find Filme -iname *pron*.mp4 -exec mv {} /media/usb_stick \;
 \end{lstlisting}
 Da find manuell alle Dateien durchackert, kann es bei komplexen Suchbegriffen oder Suchen \"uber das gesammte Dateisystem langsam werden. Abhilfe schaft da der Befehl locate. Der ist zwar bei weitem nicht so m\"achtig wie find, arbeitet daf\"ur aber mit einem Index aller Dateien, was die Suche erheblich beschleunigt. Unter Ubuntu und anderen modernen Distributionen ist locate schon korrekt eingerichtet und kann gleich verwendet werden. Locate durchsucht standardm\"assig das gesammte Dateisystem nach Dateien mit dem Suchbegriff im Namen.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 locate cron.d
 \end{lstlisting}
 Nat\"urlich kennt auch locate einen -i Schalter um die Gross-/Kleinschreibung zu missachten. Zudem kennt locate einen --regex switch zum Suchen mit Regex patterns.
 \subsection{du und df}
 DistUsage und DiskFree sind Proramme um den verf\"ugbaren und belegten Speicherplatz anzuzeigen. ls kann zwar den Speicherverbrauch einzelner Dateien anzeigen, nicht aber die Gr\"osse eines Verzeichnisses. Dazu kannt du verwndet werden. Wie ls kennen auch du und df den Parameter -h um die Gr\"ossenangaben besser verst\"andlich zu machen.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ du -h Downloads/
 976K    Downloads/BT5R1-GNOME-VM-32/caches/GuestAppsCache/appData
 16K     Downloads/BT5R1-GNOME-VM-32/caches/GuestAppsCache/launchMenu
@@ -136,12 +136,12 @@ niklaus@holahp1101:~$ du -h Downloads/
 9.2G    Downloads/
 \end{lstlisting}
 Standardm\"assig zeigt du die Gr\"osse jedes Unterverzeichnisses einzeln an. Will man nur die gesammte Gr\"osse, so verwendet man den -s Parameter:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 niklaus@holahp1101:~$ du -h -s Downloads/
 9.2G    Downloads/
 \end{lstlisting}
 df zeigt an, wie viel Speicherplatz auf einem device belegt ist. Wird df ohne weitere Arguemnte ausgef\"uhrt, so zeigt es diese Daten f\"ur alle Speichermedien an. Alternativ kann als Parameter der Pfad zum Device angegeben werden. Dabei spielt es keine rolle, ob man das Device in /dev refferenziert oder oder mit dem mountpoint.
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # df one Angabe eines Devices
 niklaus@holahp1101:~$ df -h
 Filesystem            Size  Used Avail Use% Mounted on
